@@ -114,6 +114,7 @@ export const paths = {
       subscriptionplancheckout: `${ROOTS.DASHBOARD}/subscription-plan-checkout`,
       ecommerce: `${ROOTS.DASHBOARD}/ecommerce`,
       analytics: `${ROOTS.DASHBOARD}/analytics`,
+      bestSelling: `${ROOTS.DASHBOARD}/best-selling`,
       banking: `${ROOTS.DASHBOARD}/banking`,
       booking: `${ROOTS.DASHBOARD}/booking`,
       file: `${ROOTS.DASHBOARD}/file`,
@@ -219,6 +220,9 @@ export const paths = {
     },
     categories: {
       root: `${ROOTS.DASHBOARD}/categories`,
+    },
+    brands: {
+      root: `${ROOTS.DASHBOARD}/brand`,
     },
     job: {
       root: `${ROOTS.DASHBOARD}/job`,
