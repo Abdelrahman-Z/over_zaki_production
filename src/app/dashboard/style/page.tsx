@@ -341,7 +341,6 @@ const page = () => {
 
   return (
     <Container>
-      <RoleBasedGuard permission="CREATE_PRODUCT">
         <Box
           sx={{
             display: 'flex',
@@ -406,7 +405,6 @@ const page = () => {
             </BottomActions>
           </Grid>
         </Box>
-      </RoleBasedGuard>
       <Grid container spacing={2} sx={{ padding: '16px' }} gap={2}>
         <LoadingButton
           variant="soft"

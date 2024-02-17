@@ -92,7 +92,6 @@ export function useNavData() {
               icon: ICONS.blog,
             },
           ],
-          permissions: ['GET_ORDERS'],
         },
         {
           title: t('Mobile Theme'),
@@ -116,7 +115,6 @@ export function useNavData() {
               icon: ICONS.blog,
             },
           ],
-          permissions: ['GET_ORDERS'],
         },
         {
           title: t('Plans'),

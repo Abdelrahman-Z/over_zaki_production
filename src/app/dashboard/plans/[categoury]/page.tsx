@@ -91,7 +91,6 @@ const page = () => {
 
   return (
     <Container>
-      <RoleBasedGuard permission="CREATE_PRODUCT">
         <Box
           sx={{
             display: 'flex',
@@ -130,7 +129,6 @@ const page = () => {
             </BottomActions>
           </Grid>
         </Box>
-      </RoleBasedGuard>
       <Grid container spacing={4} sx={{
         marginTop: '20px', // Adjust top margin as needed
         height: 'full', // Make the wrapper take the full page height
