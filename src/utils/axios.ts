@@ -87,6 +87,7 @@ export const endpoints = {
     me: '/auth/me',
     refresh: '/auth/refresh',
     login: '/auth/login',
+    adminLogin:'/auth/login_admin',
     register: '/auth/signup',
     sendotp: '/code/verify_account_otp',
     verifyotp: '/code/verify_account',

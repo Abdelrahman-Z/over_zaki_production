@@ -178,7 +178,7 @@ export function AuthProvider({ children }: Props) {
       password,
     };
 
-    const response = await axios.post(endpoints.auth.login, data);
+    const response = await axios.post(endpoints.auth.adminLogin, data);
 
     const { accessToken, refreshToken } = response.data.data;
     console.log(accessToken);
