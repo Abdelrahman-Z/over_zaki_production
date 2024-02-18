@@ -10,11 +10,11 @@ export const api = createApi({
         prepareHeaders: (headers, { getState }) => {
             const state: RootState = getState() as any
             headers.set('Authorization', `Bearer ${getCookie('accessToken')}`);
-            headers.set('x-tenant-id', state.selectedDomain.data.domain)
+            headers.set('x-tenant-id', state?.selectedDomain?.data?.domain)
             return headers;
         }
     }),
-    tagTypes: ['Theme', 'Style', 'Icon', 'StyleCat', 'IconCat', 'plan'],
+    tagTypes: ['Theme', 'Style', 'Icon', 'StyleCat', 'IconCat', 'plan' , 'bussinssCat'],
     endpoints: (builder) => ({
         getThemeById: builder.query({
             query: (themeId) => `/app-theme/${themeId}`,
@@ -273,6 +273,21 @@ export const api = createApi({
                 body: data
             }),
         }),
+        // bussinuess categoury
+        getAllBussinessCategoury: builder.query({
+            query: () => ({
+                url: `/business-categories`,
+            }),
+            providesTags: ['bussinssCat']
+        }),
+        addNewBussinuseCategoury: builder.mutation({
+            query: (data) => ({
+                url: `/business-categories`,
+                method: 'POST',
+                body: data
+            }),
+            invalidatesTags: ['bussinssCat']
+        }),
     }),
 });
 
@@ -325,5 +340,8 @@ export const {
     // plan sub
     useUpgradePlanMutation,
     // builder
-    useGetBuilderDetailsQuery
+    useGetBuilderDetailsQuery,
+    // bussiness categoury
+    useGetAllBussinessCategouryQuery,
+    useAddNewBussinuseCategouryMutation
 } = api;
