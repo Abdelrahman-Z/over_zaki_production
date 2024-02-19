@@ -437,9 +437,9 @@ const page = () => {
               value={themeData?.type || ''}
               settingStateValue={handleTheme}
             >
-              {types.map((type: string, index: any) => (
-                <MenuItem key={index} value={type}>
-                  {type}
+              {allBussinessCategouryRes.data?.data?.data?.map((type: any, index: any) => (
+                <MenuItem key={index} value={type.name.en}>
+                  {type.name.en}
                 </MenuItem>
               ))}
             </RHFSelect>
