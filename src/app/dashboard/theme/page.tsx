@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import {
   useAddNewThemeMutation,
   useDeleteThemeMutation,
+  useGetAllBussinessCategouryQuery,
   useGetAllThemesQuery,
   useGetThemeByIdQuery,
   useUpdateThemeMutation,
@@ -38,6 +39,7 @@ import { AppDispatch } from 'src/redux/store/store';
 import { enqueueSnackbar } from 'notistack';
 
 const page = () => {
+  const allBussinessCategouryRes = useGetAllBussinessCategouryQuery('')
   const [selectedType, setSelectedType] = useState<any>('');
   const [allThemesData, setAllThemesData] = useState<any>();
   const [addTheme] = useAddNewThemeMutation();
@@ -281,14 +283,14 @@ const page = () => {
         >
           All
         </LoadingButton>
-        {types.map((type: string, index: any) => (
+        {allBussinessCategouryRes.data?.data?.data?.map((type: any, index: any) => (
           <LoadingButton
             key={index}
             variant="soft"
-            onClick={() => setSelectedType(type)}
+            onClick={() => setSelectedType(type.name.en)}
             color={type === selectedType ? 'success' : 'inherit'}
           >
-            {type.toUpperCase()}
+            {type.name.en.toUpperCase()}
           </LoadingButton>
         ))}
       </Grid>

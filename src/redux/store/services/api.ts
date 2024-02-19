@@ -288,6 +288,14 @@ export const api = createApi({
             }),
             invalidatesTags: ['bussinssCat']
         }),
+        editBussinuseCategoury: builder.mutation({
+            query: ({id , data}) => ({
+                url: `/business-categories/${id}`,
+                method: 'PUT',
+                body: data
+            }),
+            invalidatesTags: ['bussinssCat']
+        }),
     }),
 });
 
@@ -343,5 +351,6 @@ export const {
     useGetBuilderDetailsQuery,
     // bussiness categoury
     useGetAllBussinessCategouryQuery,
-    useAddNewBussinuseCategouryMutation
+    useAddNewBussinuseCategouryMutation,
+    useEditBussinuseCategouryMutation
 } = api;

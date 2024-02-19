@@ -35,7 +35,7 @@ import { AppDispatch, RootState } from 'src/redux/store/store';
 import { useDispatch } from 'react-redux';
 import { fetchBuilderList, setBuilder } from 'src/redux/store/thunks/builder';
 import { useSelector } from 'react-redux';
-import { useAddNewBussinuseCategouryMutation, useGetAllBussinessCategouryQuery } from 'src/redux/store/services/api';
+import { useAddNewBussinuseCategouryMutation, useEditBussinuseCategouryMutation, useGetAllBussinessCategouryQuery } from 'src/redux/store/services/api';
 import { useParams } from 'next/navigation';
 import { LoadingButton } from '@mui/lab';
 import { RHFTextField } from 'src/components/hook-form';
@@ -45,6 +45,9 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Iconify from 'src/components/iconify/iconify';
 import { UploadBox } from 'src/components/upload';
+import { enqueueSnackbar } from 'notistack';
+import CategouryItem from './categouryItem';
+import { addSelectedDomain } from 'src/redux/store/thunks/selectedDomain';
 
 // ----------------------------------------------------------------------
 
@@ -60,8 +63,10 @@ type DomainState = {
 export default function Header({ onOpenNav }: Props) {
 
   // const { categoury } = useParams()
+  const selectedDomain = useSelector((state: RootState) => state.selectedDomain.data);
+
+
   const dispatch = useDispatch<AppDispatch>();
-  // const selectedDomain = useSelector((state: RootState) => state.selectedDomain.data);
   const allBussinessCategouryRes = useGetAllBussinessCategouryQuery('')
   const [openAddCategoury, setOpenAddCategoury] = useState(false)
   const theme = useTheme();
@@ -78,14 +83,17 @@ export default function Header({ onOpenNav }: Props) {
       open: true
     });
   }, []);
-  const handleClose = () => {
+  const handleClose = (categoury: any) => {
+    if (categoury) {
+      dispatch(addSelectedDomain(categoury))
+    }
     setOpenItems({
       item: null,
       open: false
     });
   };
   // add new categoury
-  const [addCategouryReq , addCategouryRes] = useAddNewBussinuseCategouryMutation()
+  const [addCategouryReq, addCategouryRes] = useAddNewBussinuseCategouryMutation()
   const addCategourySchema = Yup.object().shape({
     en: Yup.string().required('English content is required'),
     ar: Yup.string().required('Arabic content is required'),
@@ -123,7 +131,7 @@ export default function Header({ onOpenNav }: Props) {
     });
   };
 
-  const addNewCategoury = handleSubmit(async(data) => {
+  const addNewCategoury = handleSubmit(async (data) => {
     const formData = new FormData()
     formData.append('name[en]', data.en)
     formData.append('name[ar]', data.ar)
@@ -133,7 +141,116 @@ export default function Header({ onOpenNav }: Props) {
     formData.append('image', categouryData?.image)
     await addCategouryReq(formData).unwrap()
   })
+  useEffect(() => {
+    if (!openAddCategoury) {
+      reset({
+        en: '', // Default value for English content
+        ar: '', // Default value for Arabic content
+        es: '', // Default value for Spanish content
+        tr: '', // Default value for Spanish content
+        fr: '', // Default value for Spanish content
+      }); // Reset the form when the modal is closed
+      handleRemoveImage()
+    }
+  }, [openAddCategoury, reset]);
 
+  useEffect(() => {
+    if (addCategouryRes.isSuccess) {
+      enqueueSnackbar('categoury added successfully', { variant: "success" });
+    }
+    if (addCategouryRes.isError) {
+      enqueueSnackbar('Cannot add the categoury', { variant: "error" });
+    }
+  }, [addCategouryRes]);
+  useEffect(() => {
+    dispatch(addSelectedDomain(allBussinessCategouryRes.data?.data?.data[0]))
+  }, [allBussinessCategouryRes])
+  // #########
+
+
+  // edit categoury
+  const [catIndex, setCatIndex] = useState(0)
+  const editCategourySchema = Yup.object().shape({
+    name: Yup.object().shape({
+      en: Yup.string().required('English content is required'),
+      ar: Yup.string().required('Arabic content is required'),
+      es: Yup.string().required('Spanish content is required'),
+      tr: Yup.string().required('Turkish content is required'),
+      fr: Yup.string().required('France content is required'),
+    })
+  });
+  const [openEditCat, setOpenEditCat] = useState(false)
+  const [editCategouryData, setEditCategouryData] = useState<any>(null);
+  useEffect(() => {
+    setEditCategouryData(allBussinessCategouryRes.data?.data?.data[catIndex])
+  }, [catIndex])
+  
+  const [editCategouryReq, editCategouryRes] = useEditBussinuseCategouryMutation();
+
+  const editCatmethods = useForm({
+    resolver: yupResolver(editCategourySchema),
+    defaultValues: {
+      name: {
+        en: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.en,
+        ar: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.ar,
+        es: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.es,
+        tr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.tr,
+        fr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.fr,
+      },
+    }
+  });
+  const { reset: resetUpdate, handleSubmit: handleSubmitUpdate, formState: { isSubmitting: isSubmittingUpdate } } = editCatmethods;
+
+  useEffect(() => {
+    if (openEditCat) {
+      resetUpdate({
+        name: {
+          en: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.en,
+          ar: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.ar,
+          es: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.es,
+          tr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.tr,
+          fr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.fr,
+        },
+      });
+    }
+  }, [openEditCat, allBussinessCategouryRes.data?.data?.data[catIndex], reset]);
+
+  const handleEditImage = (files: any) => {
+    setEditCategouryData({
+      ...editCategouryData,
+      image: files[0],
+    });
+  };
+
+  const handleRemoveEditImage = () => {
+    setEditCategouryData({
+      ...editCategouryData,
+      image: null,
+    });
+  };
+  const editCategoury = handleSubmitUpdate(async (data: any) => {
+    console.log(data)
+    const formData = new FormData();
+    formData.append('name[en]', data.name.en);
+    formData.append('name[ar]', data.name.ar);
+    formData.append('name[es]', data.name.es);
+    formData.append('name[tr]', data.name.tr);
+    formData.append('name[fr]', data.name.fr);
+    if (editCategouryData.image instanceof File) {
+      formData.append('image', editCategouryData.image);
+    }
+
+    await editCategouryReq({ id: allBussinessCategouryRes.data?.data?.data[catIndex]._id, data: formData }).unwrap();
+  })
+  useEffect(() => {
+    if (editCategouryRes.isSuccess) {
+      enqueueSnackbar('categoury updated successfully', { variant: "success" });
+    }
+    if (editCategouryRes.isError) {
+      enqueueSnackbar('Cannot update the categoury', { variant: "error" });
+    }
+  }, [editCategouryRes]);
+  // #################
   const settings = useSettingsContext();
 
   const isNavHorizontal = settings.themeLayout === 'horizontal';
@@ -170,21 +287,21 @@ export default function Header({ onOpenNav }: Props) {
 
 
 
-          {allBussinessCategouryRes.data && allBussinessCategouryRes.data?.data?.data?.length > 0 && (
+          {selectedDomain && (
             <Stack direction='row' alignItems='center' spacing="4px" sx={{ cursor: "pointer" }}>
-              <Box component='img' src={allBussinessCategouryRes.data?.data?.data[0]?.url} sx={{ width: '40px' }} />
+              <Box component='img' src={selectedDomain?.image} sx={{ width: '40px' }} />
               <Box>
                 <Typography
                   component='p'
                   variant="subtitle2"
                   sx={{ opacity: 0.8, display: 'flex', alignItems: 'center', fontSize: '0.775rem', fontWeight: 900, gap: '3px' }}
-                > <span>{allBussinessCategouryRes.data?.data?.data[0]?.name?.en}</span>
+                > <span>{selectedDomain?.name?.en}</span>
                   <Box component='img' src='/raw/shopi2.svg' sx={{ color: '#FFFFFF' }} /> </Typography>
                 <Typography
                   component='p'
                   variant="subtitle2"
                   sx={{ opacity: 0.6, fontSize: '0.675rem' }}
-                > <span>{allBussinessCategouryRes.data?.data?.data[0]?.name?.en}</span>  </Typography>
+                > <span>{selectedDomain?.name?.en}</span>  </Typography>
               </Box>
             </Stack>
           )}
@@ -196,45 +313,16 @@ export default function Header({ onOpenNav }: Props) {
 
         </Box>
       )}
-      <Menu id="domain-menu" anchorEl={openItems?.item} sx={{}} onClose={() => handleClose()} open={Boolean(openItems.open)}>
+      <Menu id="domain-menu" anchorEl={openItems?.item} sx={{}} onClose={() => handleClose(null)} open={Boolean(openItems.open)}>
 
         {allBussinessCategouryRes.data?.data?.data?.map((categoury: any, index: any) => (
-          <MenuItem key={index} selected={categoury?._id === categoury?._id} sx={{ marginBottom: "20px" }} onClick={() => handleClose()}>
-            <Stack direction='row' alignItems='center' spacing="40px" >
-              <Stack direction='row' alignItems='center' spacing="4px" >
-                <Box component='img' src={categoury?.image} sx={{ width: '40px' }} />
-                <Box>
-                  <Typography
-                    component='p'
-                    variant="subtitle2"
-                    sx={{ opacity: 0.8, display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '0.775rem', fontWeight: 900, gap: '3px' }}
-                  > <span style={{ cursor: 'pointer' }}>{categoury?.name?.en || ""}</span> </Typography>
-                  <Typography
-                    component='p'
-                    variant="subtitle2"
-                    sx={{ opacity: 0.6, fontSize: '0.675rem', cursor: 'pointer' }}
-                  > <span style={{ cursor: 'pointer' }}>{categoury?.name?.en || ""}</span>  </Typography>
-                </Box>
-              </Stack>
-              {categoury?._id && (
-                <Box sx={{
-                  color: "#21CE99",
-                  backgroundColor: 'rgb(33, 206, 153,.1)',
-                  padding: '4px 6px',
-                  fontSize: '10px',
-                  borderRadius: '10px'
-                }} >edit</Box>
-              )}
-
-            </Stack>
-          </MenuItem>
-
+          <CategouryItem key={index} number={index} setCatIndex={setCatIndex} setOpenEditCat={setOpenEditCat} categoury={categoury} handleClose={handleClose} />
         ))}
 
 
 
         <MenuItem onClick={() => {
-          handleClose()
+          handleClose(null)
           setOpenAddCategoury(true)
         }}>
           <Stack direction='row' alignItems='center' spacing="20px" >
@@ -420,6 +508,190 @@ export default function Header({ onOpenNav }: Props) {
               fullWidth
               variant="filled"
               name="tr"
+              multiline
+              rows={5}
+            />
+
+          </Box>
+        </FormProvider>
+      </DetailsNavBar>
+
+      {/* edit cat */}
+
+      <DetailsNavBar
+        open={openEditCat}
+        onClose={() => {
+          setOpenEditCat(false)
+        }}
+        title={`Add New Categoury`}
+        actions={
+          <Stack alignItems="center" justifyContent="center" spacing="10px">
+            <LoadingButton
+              fullWidth
+              variant="soft"
+              color="success"
+              size="large"
+              loading={isSubmittingUpdate}
+              onClick={() => {
+
+                editCategoury()
+                setOpenEditCat(false)
+              }}
+              sx={{ borderRadius: '30px' }}
+            >
+              Edit
+            </LoadingButton>
+          </Stack>
+        }
+      >
+        <FormProvider methods={editCatmethods} onSubmit={editCategoury}>
+          <Box width="100%">
+            <Box>
+              {editCategouryData?.image ? (
+                <Box
+                  sx={{
+                    width: '100px',
+                    height: '100px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    flexDirection: 'column',
+                    border: '1px dashed rgb(134, 136, 163,.5)',
+                    borderRadius: '16px',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={
+                      typeof editCategouryData?.image === 'string'
+                        ? editCategouryData?.image
+                        : URL.createObjectURL(editCategouryData?.image)
+                    }
+                    alt=""
+                    sx={{ maxHeight: '95px' }}
+                  />
+                  <Box
+                    onClick={() => handleRemoveEditImage()}
+                    sx={{
+                      backgroundColor: 'rgb(134, 136, 163,.09)',
+                      padding: '10px 11px 7px 11px',
+                      borderRadius: '36px',
+                      cursor: 'pointer',
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                    }}
+                  >
+                    <Iconify icon="ic:round-delete" style={{ color: '#8688A3' }} />
+                  </Box>
+                </Box>
+              ) : (
+                <UploadBox
+                  sx={{
+                    width: '100px!important',
+                    height: '100px!important',
+                    textAlign: 'center',
+                    padding: '20px',
+                  }}
+                  onDrop={handleEditImage}
+                  maxFiles={1}
+                  maxSize={5242880}
+                  accept={{
+                    'image/jpeg': [],
+                    'image/png': [],
+                  }}
+                  placeholder={
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '10px',
+                        flexDirection: 'column',
+                      }}
+                    >
+                      <Iconify icon="system-uicons:picture" style={{ color: '#8688A3' }} />
+                      <span style={{ color: '#8688A3', fontSize: '.6rem' }}>Upload Image</span>
+                    </Box>
+                  }
+                />
+              )}
+            </Box>
+            <Typography
+              component="p"
+              noWrap
+              variant="subtitle2"
+              sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+            >
+              EN
+            </Typography>
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.en"
+              multiline
+              rows={5}
+            />
+            <Typography
+              component="p"
+              noWrap
+              variant="subtitle2"
+              sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+            >
+              AR
+            </Typography>
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.ar"
+              multiline
+              rows={5}
+            />
+            <Typography
+              component="p"
+              noWrap
+              variant="subtitle2"
+              sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+            >
+              ES
+            </Typography>
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.es"
+              multiline
+              rows={5}
+            />
+            <Typography
+              component="p"
+              noWrap
+              variant="subtitle2"
+              sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+            >
+              FR
+            </Typography>
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.fr"
+              multiline
+              rows={5}
+            />
+            <Typography
+              component="p"
+              noWrap
+              variant="subtitle2"
+              sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+            >
+              TR
+            </Typography>
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.tr"
               multiline
               rows={5}
             />

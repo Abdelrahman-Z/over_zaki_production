@@ -2,14 +2,15 @@
 import { Icon } from '@iconify/react'
 import { Box, Grid, Typography } from '@mui/material'
 import React, { useState } from 'react'
-import { data } from 'src/sections/design/view/addTheme/ThemeBusinessType'
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import { useRouter } from 'next/navigation'
 import { paths } from 'src/routes/paths'
+import { useGetAllBussinessCategouryQuery } from 'src/redux/store/services/api'
 
 
 const page = () => {
     const [selectedItem, setSelectedItem] = useState<string>("");
+    const allBussinessCategouryRes = useGetAllBussinessCategouryQuery('')
     const router = useRouter()
     const handleNext = () => {
         router.push(`${paths.dashboard.plans}/${selectedItem}`)
@@ -25,14 +26,14 @@ const page = () => {
             </Typography>
 
             <Grid container spacing={2} mt={2} px={2}>
-                {data.map((item, indx) => (
-                    <Grid onClick={() => setSelectedItem(item.title)} item key={indx} xs={6} sm={4} md={3}>
+                {allBussinessCategouryRes.data?.data?.data?.map((item:any, indx:any) => (
+                    <Grid onClick={() => setSelectedItem(item.name.en)} item key={indx} xs={6} sm={4} md={3}>
                         <Box
                             sx={{
                                 width: '100%',
                                 height: '120px',
                                 backgroundColor:
-                                    selectedItem === item.title ? 'rgb(27, 252, 182)' : 'rgb(134, 136, 163,.09)',
+                                    selectedItem === item.name. en ? 'rgb(27, 252, 182)' : 'rgb(134, 136, 163,.09)',
                                 borderRadius: '16px',
                                 textAlign: 'center',
                                 display: 'flex',
@@ -44,13 +45,13 @@ const page = () => {
                                 cursor: { xs: 'default', sm: 'pointer' },
                             }}
                         >
-                            <Icon width={24} icon={item.icon} />
+                            <Box component={'img'} width={24} src={item.image} />
                             <Typography
                                 component="h5"
                                 variant="subtitle2"
                                 sx={{ whiteSpace: 'pre-line', fontSize: '14px', fontWeight: 700 }}
                             >
-                                {item.title}{' '}
+                                {item.name.en}{' '}
                             </Typography>
                         </Box>
                     </Grid>

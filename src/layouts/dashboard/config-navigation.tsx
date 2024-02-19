@@ -9,6 +9,8 @@ import { useLocales } from 'src/locales';
 // import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
 import { useAuthContext } from 'src/auth/hooks';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/store/store';
 
 // ----------------------------------------------------------------------
 
@@ -63,6 +65,7 @@ const ICONS = {
 
 export function useNavData() {
   const { t } = useLocales();
+  const selectedDomain = useSelector((state: RootState) => state.selectedDomain.data);
 
   // Initialize state with the initial value for navData
   const [navData, setNavData] = useState<NavDataItem[]>([
@@ -95,7 +98,7 @@ export function useNavData() {
         },
         {
           title: t('Mobile Theme'),
-  
+
           icon: ICONS.analytics,
           path: '',
           children: [
@@ -118,7 +121,7 @@ export function useNavData() {
         },
         {
           title: t('Plans'),
-          path: paths.dashboard.plans,
+          path: selectedDomain ? `/${paths.dashboard.plans}/${selectedDomain.name.en}` : paths.dashboard.plans,
           icon: ICONS.blog
         }
       ],
