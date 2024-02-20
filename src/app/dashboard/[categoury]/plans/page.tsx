@@ -32,8 +32,9 @@ const page = () => {
       tr: Yup.string().required('Turkish content is required'),
       fr: Yup.string().required('France content is required'),
     }),
-    availableForPro: Yup.boolean().required('Availability for Pro is required'),
-    availableForFree: Yup.boolean().required('Availability for Free is required'),
+    availableForYearlyPro: Yup.boolean(),
+    availableForMonthlyPro: Yup.boolean(),
+    availableForFree: Yup.boolean(),
   });
   const addFeatureMethods = useForm({
     resolver: yupResolver(AddFeatureSchema),
@@ -45,7 +46,8 @@ const page = () => {
         tr: '', // Default value for Spanish content
         fr: '', // Default value for Spanish content
       },
-      availableForPro: false, // Default value for availableForPro
+      availableForYearlyPro: false, // Default value for availableForPro
+      availableForMonthlyPro: false, // Default value for availableForFree
       availableForFree: false, // Default value for availableForFree
     }
   });
@@ -66,8 +68,9 @@ const page = () => {
           tr: '', // Default value for Spanish content
           fr: '', // Default value for Spanish content
         },
-        availableForPro: false, // Default value for availableForPro
-        availableForFree: false, // Default value for availableForFree
+        availableForFree: false, // Default value for availableForPro
+        availableForYearlyPro: false, // Default value for availableForFree
+        availableForMonthlyPro: false, // Default value for availableForFree
       }); // Reset the form when the modal is closed
     }
   }, [openAddFeature, resetAddFeatureForm]);
@@ -90,7 +93,8 @@ const page = () => {
 
 
   return (
-    <Container>
+    <>
+      <Container>
         <Box
           sx={{
             display: 'flex',
@@ -129,15 +133,17 @@ const page = () => {
             </BottomActions>
           </Grid>
         </Box>
-      <Grid container spacing={4} sx={{
-        marginTop: '20px', // Adjust top margin as needed
-        height: 'full', // Make the wrapper take the full page height
-        width: '100%', // Ensure the wrapper takes the full width
-        boxSizing: 'border-box', // Ensure padding and border are included in the element's total width and height
-        justifyContent: 'center'
-      }}>
-        {response?.data?.data.map((el: any) => <FinancialPlanCard plan={el} />)}
-      </Grid>
+        <Grid container spacing={4} sx={{
+          marginTop: '20px', // Adjust top margin as needed
+          height: 'full', // Make the wrapper take the full page height
+          width: '100%', // Ensure the wrapper takes the full width
+          boxSizing: 'border-box', // Ensure padding and border are included in the element's total width and height
+          justifyContent: 'center',
+          gap: 3
+        }}>
+          {response?.data?.data?.plans?.map((el: any) => <FinancialPlanCard plan={el} />)}
+        </Grid>
+      </Container>
       <DetailsNavBar
         open={openAddFeature}
         onClose={() => setOpenAddFeature(false)}
@@ -247,17 +253,21 @@ const page = () => {
               Avaliblity
             </Typography>
             <RHFCheckbox
-              name="availableForPro"
-              label="Available for Pro" // Assuming your RHFCheckbox supports a label prop
+              name="availableForYearlyPro"
+              label="Available for Yearly Pro" // Assuming your RHFCheckbox supports a label prop
+            />
+            <RHFCheckbox
+              name="availableForMonthlyPro"
+              label="Available For MonthlyPro"
             />
             <RHFCheckbox
               name="availableForFree"
-              label="availableForFree"
+              label="Available For Free"
             />
           </Box>
         </FormProvider>
       </DetailsNavBar>
-    </Container>
+    </>
   )
 }
 

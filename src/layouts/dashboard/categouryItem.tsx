@@ -13,20 +13,28 @@ import { useEditBussinuseCategouryMutation } from 'src/redux/store/services/api'
 import { RootState } from 'src/redux/store/store';
 import DetailsNavBar from 'src/sections/products/DetailsNavBar';
 import * as Yup from 'yup';
+import { useTheme } from '@mui/material/styles';
 
 
 
 
 
-const CategouryItem = ({ categoury, handleClose , number , setCatIndex , setOpenEditCat}: any) => {
+
+const CategouryItem = ({ categoury, handleClose, number, setCatIndex, setOpenEditCat }: any) => {
     const selectedDomain = useSelector((state: RootState) => state.selectedDomain.data);
-
+    const theme = useTheme();
+    const isDarkMode = theme.palette.mode === 'dark';
     return (
         <>
             <MenuItem selected={categoury?._id === selectedDomain?._id} sx={{ marginBottom: "20px", minWidth: 250 }} >
                 <Stack direction='row' display={'flex'} width={'100%'} justifyContent={'space-between'} alignItems='center' >
                     <Stack direction='row' flex={1} alignItems='center' spacing="4px" onClick={() => handleClose(categoury)} >
-                        <Box component='img' src={categoury?.image} sx={{ width: '40px' }} />
+                        <Box component='img' src={categoury?.image}
+                            sx={{
+                                width: '40px',
+                                filter: isDarkMode ? 'invert(100%)' : 'none',
+                            }}
+                        />
                         <Box>
                             <Typography
                                 component='p'

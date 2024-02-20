@@ -595,7 +595,7 @@ const page = () => {
                 setstyleData((prev: any) => ({
                   ...prev,
                   category: {
-                    ...prev.category,
+                    ...prev?.category,
                     id: selectedCategoryId,
                   },
                 }));

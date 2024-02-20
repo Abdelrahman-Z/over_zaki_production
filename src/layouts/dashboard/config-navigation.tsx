@@ -11,6 +11,7 @@ import SvgColor from 'src/components/svg-color';
 import { useAuthContext } from 'src/auth/hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/store/store';
+import { useParams } from 'next/navigation';
 
 // ----------------------------------------------------------------------
 
@@ -65,10 +66,10 @@ const ICONS = {
 
 export function useNavData() {
   const { t } = useLocales();
-  const selectedDomain = useSelector((state: RootState) => state.selectedDomain.data);
+  const {categoury} = useParams()
 
   // Initialize state with the initial value for navData
-  const [navData, setNavData] = useState<NavDataItem[]>([
+  let navData = [
     // OVERVIEW
     // ----------------------------------------------------------------------
     {
@@ -81,17 +82,17 @@ export function useNavData() {
           children: [
             {
               title: t('theme'),
-              path: paths.dashboard.theme,
+              path: `/dashboard/${categoury}/theme`,
               icon: ICONS.blog,
             },
             {
               title: t('style'),
-              path: paths.dashboard.style,
+              path: `/dashboard/${categoury}/style`,
               icon: ICONS.blog,
             },
             {
               title: t('icons'),
-              path: paths.dashboard.icon,
+              path: `/dashboard/${categoury}/icon`,
               icon: ICONS.blog,
             },
           ],
@@ -104,29 +105,29 @@ export function useNavData() {
           children: [
             {
               title: t('theme'),
-              path: paths.dashboard.theme,
+              path: `/dashboard/${categoury}/theme`,
               icon: ICONS.blog,
             },
             {
               title: t('style'),
-              path: paths.dashboard.style,
+              path: `/dashboard/${categoury}/style`,
               icon: ICONS.blog,
             },
             {
               title: t('icons'),
-              path: paths.dashboard.icon,
+              path: `/dashboard/${categoury}/icon`,
               icon: ICONS.blog,
             },
           ],
         },
         {
           title: t('Plans'),
-          path: selectedDomain ? `/${paths.dashboard.plans}/${selectedDomain.name.en}` : paths.dashboard.plans,
+          path: `/dashboard/${categoury}/plans`,
           icon: ICONS.blog
         }
       ],
     },
-  ]); // Add any other dependencies as needed
+  ] // Add any other dependencies as needed
 
   return navData;
 }

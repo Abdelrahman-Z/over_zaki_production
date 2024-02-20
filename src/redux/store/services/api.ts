@@ -223,13 +223,10 @@ export const api = createApi({
             providesTags: ['plan']
         }),
         updatePlan: builder.mutation({
-            query: (data) => ({
-                url: `/plans/${data.id}`,
+            query: ({id ,data}) => ({
+                url: `/plans/${id}`,
                 method: 'PUT',
-                body: {
-                    name: data.name,
-                    price: data.price
-                }
+                body: data
             }),
             invalidatesTags: ['plan']
         }),
@@ -248,14 +245,10 @@ export const api = createApi({
             providesTags: ['plan']
         }),
         UpdateFeature: builder.mutation({
-            query: (data) => ({
-                url: `/feature/${data.id}`,
+            query: ({id , data}) => ({
+                url: `/feature/${id}`,
                 method: 'PUT',
-                body: {
-                    content: data.content,
-                    availableForPro: data.availableForPro,
-                    availableForFree: data.availableForFree,
-                }
+                body: data
             }),
             invalidatesTags: ['plan']
         }),

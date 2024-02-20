@@ -29,31 +29,33 @@ const FeatureCart = ({ feature }: any) => {
             tr: Yup.string().required('Turkish content is required'),
             fr: Yup.string().required('French content is required'),
         }),
+        availableForYearlyPro: Yup.boolean().required('This field is required'),
+        availableForMonthlyPro: Yup.boolean().required('This field is required'),
         availableForFree: Yup.boolean().required('This field is required'),
-        availableForPro: Yup.boolean().required('This field is required'),
     });
+
 
     const methods = useForm({
         resolver: yupResolver(UpdateFeatureSchema),
         defaultValues: {
             content: {
-                en: feature.content.en,
-                ar: feature.content.ar,
-                es: feature.content.es,
-                tr: feature.content.tr,
-                fr: feature.content.fr,
+                en: feature?.content?.en,
+                ar: feature?.content?.ar,
+                es: feature?.content?.es,
+                tr: feature?.content?.tr,
+                fr: feature?.content?.fr,
             },
+            availableForYearlyPro: feature.availableForYearlyPro,
+            availableForMonthlyPro: feature.availableForMonthlyPro,
             availableForFree: feature.availableForFree,
-            availableForPro: feature.availableForPro,
         }
     });
+
 
     const updateFeature = methods.handleSubmit(async (data) => {
         await updateFeatureReq({
             id: feature._id, // Assuming each feature has a unique ID
-            content: data.content,
-            availableForFree: data.availableForFree,
-            availableForPro: data.availableForPro,
+            data: data
         }).unwrap();
     });
 
@@ -62,17 +64,19 @@ const FeatureCart = ({ feature }: any) => {
         if (openChangeFeature) {
             methods.reset({
                 content: {
-                    en: feature.content.en,
-                    ar: feature.content.ar,
-                    es: feature.content.es,
-                    tr: feature.content.tr,
-                    fr: feature.content.fr,
+                    en: feature.content.en ?? '',
+                    ar: feature.content.ar ?? '',
+                    es: feature.content.es ?? '',
+                    tr: feature.content.tr ?? '',
+                    fr: feature.content.fr ?? '',
                 },
-                availableForFree: feature.availableForFree,
-                availableForPro: feature.availableForPro,
+                availableForYearlyPro: feature.availableForYearlyPro ?? false,
+                availableForMonthlyPro: feature.availableForMonthlyPro ?? false,
+                availableForFree: feature.availableForFree ?? false,
             });
         }
     }, [openChangeFeature, feature, methods.reset]);
+
 
 
     useEffect(() => {
@@ -94,7 +98,7 @@ const FeatureCart = ({ feature }: any) => {
                     <CheckCircleOutline color="success" />
                 </ListItemIcon>
                 <ListItemText primary={feature.content.en} />
-                <IconButton edge="end" aria-label="edit" onClick={()=> setOpenChangeFeature(true)}>
+                <IconButton edge="end" aria-label="edit"  onClick={() => setOpenChangeFeature(true)}>
                     <EditIcon />
                 </IconButton>
             </ListItem>
@@ -207,12 +211,16 @@ const FeatureCart = ({ feature }: any) => {
                             Avaliblity
                         </Typography>
                         <RHFCheckbox
-                            name="availableForPro"
-                            label="Available for Pro" // Assuming your RHFCheckbox supports a label prop
+                            name="availableForYearlyPro"
+                            label="Available for yearly Pro" // Assuming your RHFCheckbox supports a label prop
+                        />
+                        <RHFCheckbox
+                            name="availableForMonthlyPro"
+                            label="available For Monthly Pro"
                         />
                         <RHFCheckbox
                             name="availableForFree"
-                            label="availableForFree"
+                            label="available For Free"
                         />
                     </Box>
                 </FormProvider>

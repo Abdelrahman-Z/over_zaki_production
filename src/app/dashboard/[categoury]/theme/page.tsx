@@ -37,13 +37,14 @@ import {
 } from 'src/redux/store/thunks/theme';
 import { AppDispatch } from 'src/redux/store/store';
 import { enqueueSnackbar } from 'notistack';
+import { useParams } from 'next/navigation';
 
 const page = () => {
+  const {categoury} = useParams()
   const allBussinessCategouryRes = useGetAllBussinessCategouryQuery('')
-  const [selectedType, setSelectedType] = useState<any>('');
   const [allThemesData, setAllThemesData] = useState<any>();
   const [addTheme] = useAddNewThemeMutation();
-  const { data: allThemes } = useGetAllThemesQuery(selectedType);
+  const { data: allThemes } = useGetAllThemesQuery(categoury);
   const [openDetails, setOpenDetails] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const [themeData, setThemeData] = useState<any>(null);
@@ -275,25 +276,6 @@ const page = () => {
             </Stack>
           </BottomActions>
         </Box>
-      <Grid container spacing={2} sx={{ padding: '16px' }} gap={2}>
-        <LoadingButton
-          variant="soft"
-          onClick={() => setSelectedType('')}
-          color={null === selectedType ? 'success' : 'inherit'}
-        >
-          All
-        </LoadingButton>
-        {allBussinessCategouryRes.data?.data?.data?.map((type: any, index: any) => (
-          <LoadingButton
-            key={index}
-            variant="soft"
-            onClick={() => setSelectedType(type.name.en)}
-            color={type === selectedType ? 'success' : 'inherit'}
-          >
-            {type.name.en.toUpperCase()}
-          </LoadingButton>
-        ))}
-      </Grid>
       <DetailsNavBar
         open={themeDrawer}
         onClose={handleDrawerClose}
@@ -438,7 +420,7 @@ const page = () => {
               settingStateValue={handleTheme}
             >
               {allBussinessCategouryRes.data?.data?.data?.map((type: any, index: any) => (
-                <MenuItem key={index} value={type.name.en}>
+                <MenuItem key={index} value={type.name.en.toLowerCase()}>
                   {type.name.en}
                 </MenuItem>
               ))}
@@ -467,7 +449,7 @@ const page = () => {
       </DetailsNavBar>
       <Grid container spacing={2} sx={{ padding: '16px' }}>
         {allThemesData
-          ?.filter((item: any) => item?.type?.includes(selectedType))
+          ?.filter((item: any) => item?.type?.includes(categoury))
           ?.map((el: any) => (
             <ThemeCard
               toggleDrawerCommon={toggleDrawerCommon}

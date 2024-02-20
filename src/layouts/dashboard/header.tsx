@@ -36,7 +36,7 @@ import { useDispatch } from 'react-redux';
 import { fetchBuilderList, setBuilder } from 'src/redux/store/thunks/builder';
 import { useSelector } from 'react-redux';
 import { useAddNewBussinuseCategouryMutation, useEditBussinuseCategouryMutation, useGetAllBussinessCategouryQuery } from 'src/redux/store/services/api';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { LoadingButton } from '@mui/lab';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
@@ -47,7 +47,7 @@ import Iconify from 'src/components/iconify/iconify';
 import { UploadBox } from 'src/components/upload';
 import { enqueueSnackbar } from 'notistack';
 import CategouryItem from './categouryItem';
-import { addSelectedDomain } from 'src/redux/store/thunks/selectedDomain';
+import { PathnameContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
 
 // ----------------------------------------------------------------------
 
@@ -62,14 +62,14 @@ type DomainState = {
 
 export default function Header({ onOpenNav }: Props) {
 
-  // const { categoury } = useParams()
-  const selectedDomain = useSelector((state: RootState) => state.selectedDomain.data);
-
-
-  const dispatch = useDispatch<AppDispatch>();
+  const pathName = usePathname()
+  const router = useRouter()
+  const { categoury } = useParams()
   const allBussinessCategouryRes = useGetAllBussinessCategouryQuery('')
+  const selectedCat = allBussinessCategouryRes?.data?.data?.data?.find((el: any) => el.uniqueName.toLowerCase() === categoury.toString().toLowerCase())
   const [openAddCategoury, setOpenAddCategoury] = useState(false)
   const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   const [openItems, setOpenItems] = React.useState<any>({
     open: false,
     item: null
@@ -85,7 +85,9 @@ export default function Header({ onOpenNav }: Props) {
   }, []);
   const handleClose = (categoury: any) => {
     if (categoury) {
-      dispatch(addSelectedDomain(categoury))
+      const arr = pathName.split('/')
+      arr[2] = categoury.uniqueName.toLowerCase()
+      router.push(arr.join('/'))
     }
     setOpenItems({
       item: null,
@@ -162,9 +164,6 @@ export default function Header({ onOpenNav }: Props) {
       enqueueSnackbar('Cannot add the categoury', { variant: "error" });
     }
   }, [addCategouryRes]);
-  useEffect(() => {
-    dispatch(addSelectedDomain(allBussinessCategouryRes.data?.data?.data[0]))
-  }, [allBussinessCategouryRes])
   // #########
 
 
@@ -184,7 +183,7 @@ export default function Header({ onOpenNav }: Props) {
   useEffect(() => {
     setEditCategouryData(allBussinessCategouryRes.data?.data?.data[catIndex])
   }, [catIndex])
-  
+
   const [editCategouryReq, editCategouryRes] = useEditBussinuseCategouryMutation();
 
   const editCatmethods = useForm({
@@ -229,7 +228,6 @@ export default function Header({ onOpenNav }: Props) {
     });
   };
   const editCategoury = handleSubmitUpdate(async (data: any) => {
-    console.log(data)
     const formData = new FormData();
     formData.append('name[en]', data.name.en);
     formData.append('name[ar]', data.name.ar);
@@ -287,21 +285,24 @@ export default function Header({ onOpenNav }: Props) {
 
 
 
-          {selectedDomain && (
+          {selectedCat && (
             <Stack direction='row' alignItems='center' spacing="4px" sx={{ cursor: "pointer" }}>
-              <Box component='img' src={selectedDomain?.image} sx={{ width: '40px' }} />
+              <Box component='img' src={selectedCat?.image} sx={{
+                width: '40px',
+                filter: isDarkMode ? 'invert(100%)' : 'none',
+              }} />
               <Box>
                 <Typography
                   component='p'
                   variant="subtitle2"
                   sx={{ opacity: 0.8, display: 'flex', alignItems: 'center', fontSize: '0.775rem', fontWeight: 900, gap: '3px' }}
-                > <span>{selectedDomain?.name?.en}</span>
+                > <span>{selectedCat?.name?.en}</span>
                   <Box component='img' src='/raw/shopi2.svg' sx={{ color: '#FFFFFF' }} /> </Typography>
                 <Typography
                   component='p'
                   variant="subtitle2"
                   sx={{ opacity: 0.6, fontSize: '0.675rem' }}
-                > <span>{selectedDomain?.name?.en}</span>  </Typography>
+                > <span>{selectedCat?.name?.en}</span>  </Typography>
               </Box>
             </Stack>
           )}
