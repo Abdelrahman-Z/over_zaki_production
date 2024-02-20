@@ -239,7 +239,7 @@ export default function HomeHero() {
           <Stack alignItems="center" spacing={2}>
             <Button
               component={RouterLink}
-              href={paths.dashboard.root}
+              href={'/dashboard/market/theme'}
               color="inherit"
               size="large"
               variant="contained"
