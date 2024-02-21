@@ -176,7 +176,8 @@ export default function Header({ onOpenNav }: Props) {
       es: Yup.string().required('Spanish content is required'),
       tr: Yup.string().required('Turkish content is required'),
       fr: Yup.string().required('France content is required'),
-    })
+    }),
+    sort: Yup.number().required().positive()
   });
   const [openEditCat, setOpenEditCat] = useState(false)
   const [editCategouryData, setEditCategouryData] = useState<any>(null);
@@ -196,6 +197,7 @@ export default function Header({ onOpenNav }: Props) {
         tr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.tr,
         fr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.fr,
       },
+      sort: allBussinessCategouryRes.data?.data?.data[catIndex]?.sort
     }
   });
   const { reset: resetUpdate, handleSubmit: handleSubmitUpdate, formState: { isSubmitting: isSubmittingUpdate } } = editCatmethods;
@@ -210,6 +212,7 @@ export default function Header({ onOpenNav }: Props) {
           tr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.tr,
           fr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.fr,
         },
+        sort: allBussinessCategouryRes.data?.data?.data[catIndex]?.sort
       });
     }
   }, [openEditCat, allBussinessCategouryRes.data?.data?.data[catIndex], reset]);
@@ -234,7 +237,8 @@ export default function Header({ onOpenNav }: Props) {
     formData.append('name[es]', data.name.es);
     formData.append('name[tr]', data.name.tr);
     formData.append('name[fr]', data.name.fr);
-    if (editCategouryData.image instanceof File) {
+    formData.append('sort', data.sort);
+    if (editCategouryData?.image instanceof File) {
       formData.append('image', editCategouryData.image);
     }
 
@@ -633,8 +637,7 @@ export default function Header({ onOpenNav }: Props) {
               fullWidth
               variant="filled"
               name="name.en"
-              multiline
-              rows={5}
+
             />
             <Typography
               component="p"
@@ -648,8 +651,7 @@ export default function Header({ onOpenNav }: Props) {
               fullWidth
               variant="filled"
               name="name.ar"
-              multiline
-              rows={5}
+
             />
             <Typography
               component="p"
@@ -663,8 +665,7 @@ export default function Header({ onOpenNav }: Props) {
               fullWidth
               variant="filled"
               name="name.es"
-              multiline
-              rows={5}
+
             />
             <Typography
               component="p"
@@ -678,8 +679,6 @@ export default function Header({ onOpenNav }: Props) {
               fullWidth
               variant="filled"
               name="name.fr"
-              multiline
-              rows={5}
             />
             <Typography
               component="p"
@@ -693,8 +692,21 @@ export default function Header({ onOpenNav }: Props) {
               fullWidth
               variant="filled"
               name="name.tr"
-              multiline
-              rows={5}
+
+            />
+            <Typography
+              component="p"
+              noWrap
+              variant="subtitle2"
+              sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+            >
+              Sort
+            </Typography>
+            <RHFTextField
+              fullWidth
+              type='number'
+              variant="filled"
+              name="sort"
             />
 
           </Box>

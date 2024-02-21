@@ -139,8 +139,7 @@ const FeatureCart = ({ feature }: any) => {
                             fullWidth
                             variant="filled"
                             name="content.en"
-                            multiline
-                            rows={5}
+
                         />
                         <Typography
                             component="p"
@@ -154,8 +153,7 @@ const FeatureCart = ({ feature }: any) => {
                             fullWidth
                             variant="filled"
                             name="content.ar"
-                            multiline
-                            rows={5}
+
                         />
                         <Typography
                             component="p"
@@ -169,8 +167,7 @@ const FeatureCart = ({ feature }: any) => {
                             fullWidth
                             variant="filled"
                             name="content.es"
-                            multiline
-                            rows={5}
+
                         />
                         <Typography
                             component="p"
@@ -184,8 +181,7 @@ const FeatureCart = ({ feature }: any) => {
                             fullWidth
                             variant="filled"
                             name="content.fr"
-                            multiline
-                            rows={5}
+
                         />
                         <Typography
                             component="p"
@@ -199,8 +195,7 @@ const FeatureCart = ({ feature }: any) => {
                             fullWidth
                             variant="filled"
                             name="content.tr"
-                            multiline
-                            rows={5}
+
                         />
                         <Typography
                             component="p"
