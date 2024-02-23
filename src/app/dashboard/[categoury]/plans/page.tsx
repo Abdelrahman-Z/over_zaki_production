@@ -1,7 +1,7 @@
 'use client'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material'
+import { Box, Button, Container, Grid, Stack, Switch, Typography } from '@mui/material'
 import { useParams } from 'next/navigation'
 import { enqueueSnackbar } from 'notistack'
 import React, { useEffect, useState } from 'react'
@@ -23,7 +23,7 @@ const page = () => {
   const [openAddFeature, setOpenAddFeature] = useState(false)
   const [addFeatureReq, addFeatureRes] = useAddNewFeatureMutation();
 
-
+  // console.log(response)
   const AddFeatureSchema = Yup.object().shape({
     content: Yup.object().shape({
       en: Yup.string().required('English content is required'),
@@ -94,8 +94,8 @@ const page = () => {
 
   return (
     <>
-      <Container>
-        <Box
+      <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between', // Adjust as needed for layout
@@ -132,16 +132,40 @@ const page = () => {
               </Stack>
             </BottomActions>
           </Grid>
+        </Box> */}
+        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Typography sx={{ fontSize: '24px', fontWeight: 900, color: '#0F1349', mt: 1.5 }}>Subscription Plan</Typography>
+          <Typography sx={{ color: '#8688A3', mt: 0.7 }}>Choose your subscription plan that fit your business.</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', m: '15px 0' }}>
+            <Typography>Monthly</Typography>
+            <Switch inputProps={{ 'aria-label': 'Month' }} defaultChecked style={{ '& .MuiSwitch-track': { backgroundColor: '#1BFCB6' } }} />
+            <Typography>Yearly</Typography>
+          </Box>
         </Box>
         <Grid container spacing={4} sx={{
-          marginTop: '20px', // Adjust top margin as needed
-          height: 'full', // Make the wrapper take the full page height
-          width: '100%', // Ensure the wrapper takes the full width
-          boxSizing: 'border-box', // Ensure padding and border are included in the element's total width and height
-          justifyContent: 'center',
-          gap: 3
+          marginTop: '15px',
+          height: '610px',
+          boxSizing: 'border-box',
+          display: 'flex',
+          ml: 0,
+          overflowX: 'auto', width: '100%',
+          overflowY: 'noScroll'
         }}>
-          {response?.data?.data?.plans?.map((el: any) => <FinancialPlanCard plan={el} />)}
+          <Box sx={{
+            position: 'relative',
+            boxSizing: 'border-box',
+            gap: { xs: 2, sm: 3 },
+            display: 'flex', height: '610px',
+            flexDirection: 'row',
+            justifyContent: { sm: 'start', md: 'center' },
+            alignItems: 'center',
+            width: { xs: '820px', sm: '850px' }
+          }}>
+            {/* {!!response?.data?.data?.plans && Object.values(response?.data?.data?.plans)?.filter((item, index) => index < 2)?.map((el: any) =>  */}
+            <FinancialPlanCard />
+            <FinancialPlanCard />
+          </Box>
+        {/* )} */}
         </Grid>
       </Container>
       <DetailsNavBar

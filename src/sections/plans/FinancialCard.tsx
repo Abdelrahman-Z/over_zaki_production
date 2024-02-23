@@ -1,26 +1,28 @@
 'use client'
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Button, Stack, Box, List } from '@mui/material';
-import { useGetAllFeaturesByCatQuery, useUpdatePlanMutation } from 'src/redux/store/services/api';
-import EditIcon from '@mui/icons-material/Edit';
-import DetailsNavBar from '../products/DetailsNavBar';
-import { LoadingButton } from '@mui/lab';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import FormProvider from 'src/components/hook-form/form-provider';
-import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
-import * as Yup from 'yup';
-import { enqueueSnackbar } from 'notistack';
-import { useParams } from 'next/navigation';
-import FeatureCart from './featureCart';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Collapse, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { CheckCircleOutline } from '@mui/icons-material';
+import { LoadingButton } from '@mui/lab';
+import { Box, Button, Collapse, List, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { useParams } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
+import FormProvider from 'src/components/hook-form/form-provider';
+import { useGetAllFeaturesByCatQuery, useUpdatePlanMutation } from 'src/redux/store/services/api';
+import * as Yup from 'yup';
+import DetailsNavBar from '../products/DetailsNavBar';
+import FeatureCart from './featureCart';
+import DoneIcon from '@mui/icons-material/Done';
 
 
-const FinancialPlanCard = ({ plan }: any) => {
+const FinancialPlanCard = (
+    // { plan }: any
+) => {
+    const plan = {}
     // get all features
     const { categoury } = useParams()
-
+    // console.log(plan, " Plan")
     const allFeaturesRes = useGetAllFeaturesByCatQuery(categoury.toString().toLowerCase())
     // update plan
     const [upatePlanReq, updatePlanRes] = useUpdatePlanMutation()
@@ -73,7 +75,7 @@ const FinancialPlanCard = ({ plan }: any) => {
             price: plan?.price,
             branchNumber: plan?.limitAccess?.branchNumber,
             withFreeDomain: plan?.limitAccess?.withFreeDomain,
-            staffNumber: plan.limitAccess.staffNumber,
+            staffNumber: plan?.limitAccess?.staffNumber,
             staffNumberFeature: {
                 en: plan?.limitAccess?.staffNumberFeature?.en,
                 ar: plan?.limitAccess?.staffNumberFeature?.ar,
@@ -115,7 +117,7 @@ const FinancialPlanCard = ({ plan }: any) => {
                 price: plan?.price,
                 branchNumber: plan?.limitAccess?.branchNumber,
                 withFreeDomain: plan?.limitAccess?.withFreeDomain,
-                staffNumber: plan.limitAccess.staffNumber,
+                staffNumber: plan?.limitAccess?.staffNumber,
                 staffNumberFeature: {
                     en: plan?.limitAccess?.staffNumberFeature?.en,
                     ar: plan?.limitAccess?.staffNumberFeature?.ar,
@@ -195,9 +197,9 @@ const FinancialPlanCard = ({ plan }: any) => {
 
     return (
         <>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} sx={{ width: { xs: 'calc(100vw - 80px)', sm: '100vw' }, maxWidth: { xs: '600px', sm: '400px' }, minWidth: { xs: '200px', sm: '330px' }, height: { xs: "540px", sm: '600px' }, borderRadius: '20px', boxShadow: "0px 14px 20px #0F134914" }}>
                 <Table aria-label="financial plan table">
-                    <TableHead>
+                    {/* <TableHead>
                         <TableRow>
                             <TableCell>Plan Type</TableCell>
                             <TableCell align="right">Price</TableCell>
@@ -207,42 +209,128 @@ const FinancialPlanCard = ({ plan }: any) => {
                             <TableCell align="right">Free Domain</TableCell>
                             <TableCell align="right">Edit Plan</TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell component="th" scope="row">
-                                {plan.type.toUpperCase()}
-                            </TableCell>
-                            <TableCell align="right">${plan.price}</TableCell>
-                            <TableCell align="right">{plan.durationType}</TableCell>
+                    </TableHead> */}
+                    <TableBody sx={{ p: { xs: 1.5, sm: 2.5, md: 3.75 }, boxSizing: 'border-box', display: 'flex', flexWrap: 'wrap' }}>
+                        {/* <TableContainer>
+                            <TableRow>
+                                <TableCell component="th" scope="row">
+                                    {plan.type.toUpperCase()}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="right">{Object.values(plan.price)[0]}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="right">{plan.durationType}</TableCell>
+                            </TableRow>
+                            <TableRow>
                             <TableCell align="right">{plan.limitAccess.branchNumber}</TableCell>
-                            <TableCell align="right">{plan.limitAccess.staffNumber}</TableCell>
-                            <TableCell align="right">
-                                <CheckCircleOutline color={plan.limitAccess.withFreeDomain ? "success" : 'error'} />
-                            </TableCell>
-                            <TableCell align="right">
-                                <IconButton edge="end" aria-label="edit" onClick={() => setOpenChangePlan(true)}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="right">{plan.limitAccess.staffNumber}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="right">
+                                    <CheckCircleOutline color={plan.limitAccess.withFreeDomain ? "success" : 'error'} />
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="right">
+                                    <IconButton edge="end" aria-label="edit" onClick={() => setOpenChangePlan(true)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        </TableContainer> */}
+                        <TableContainer sx={{ overflow: 'hidden' }}>
+                            <TableRow sx={{ display: 'flex' }}>
+                                <TableContainer>
+                                    <TableRow sx={{ textAlign: 'start !important', }}>
+                                        <TableCell sx={{ borderBottomStyle: 'none', padding: '1px', fontSize: '20px', fontWeight: 'bold' }} >Pro Plan</TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ textAlign: 'start !important', }}>
+                                        <TableCell sx={{ borderBottomStyle: 'none', lineHeight: '25px', padding: '0', fontSize: '16px', fontWeight: 'bold' }} align="right">100 KWD/year</TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ textAlign: 'start !important', }}>
+                                        <TableCell sx={{ borderBottomStyle: 'none', lineHeight: '22px', padding: '0', fontSize: '14px', fontWeight: '500', color: 'gray', textDecoration: 'line-through' }} component="th" scope="row">
+                                            120 KWD/year
+                                        </TableCell>
+                                    </TableRow>
+                                </TableContainer>
+                                <CheckCircleOutline sx={{ width: "58px", height: "47px" }} color={"success"} />
+                            </TableRow>
+                            <TableRow sx={{ width: '100%', display: 'flex', m: '18px 0' }}>
+                                <Button sx={{
+                                    fontSize: { xs: '16px', sm: '18px' }, color: '#000', width: '100%', maxWidth: '340px', height: { xs: '50px', sm: '60px' }, background: "#1BFCB6", borderRadius: "30px",
+                                    '&:hover': { backgroundColor: '#0DCC9B' },
+                                }} colors={'black'}>Upgrade Now</Button>
+                            </TableRow>
+                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
+                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
+                                    Lorem Ipsum is typesetting.
+                                </TableCell>
+                            </TableRow>
+                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
+                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
+                                    Lorem Ipsum is typesetting.
+                                </TableCell>
+                            </TableRow>
+                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
+                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
+                                    Lorem Ipsum is typesetting.
+                                </TableCell>
+                            </TableRow>
+                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
+                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
+                                    Lorem Ipsum is typesetting.
+                                </TableCell>
+                            </TableRow>
+                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
+                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
+                                    Lorem Ipsum is typesetting.
+                                </TableCell>
+                            </TableRow>
+                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
+                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
+                                    Lorem Ipsum is typesetting.
+                                </TableCell>
+                            </TableRow>
+                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
+                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
+                                    Lorem Ipsum is typesetting.
+                                </TableCell>
+                            </TableRow>
+                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
+                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right" onClick={() => setOpenChangePlan(true)}>
+                                    See More
+                                </TableCell>
+                            </TableRow>
+                        </TableContainer>
                         {/* Collapsible row for features */}
-                        <TableRow>
+                        {/* <TableRow>
                             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
                                 <Collapse in={true} timeout="auto" unmountOnExit>
-                                    <Box margin={1}>
-                                        <Typography variant="h6" gutterBottom component="div">
+                                    <Box margin={1}> */}
+                        {/* <Typography variant="h6" gutterBottom component="div">
                                             Features
-                                        </Typography>
-                                        <List dense>
+                                        </Typography> */}
+                        {/* <List dense>
                                             {allFeaturesRes?.data?.data?.map((feature: any, index: number) => {
-                                                if (plan.durationType === 'sevenDays' && feature.availableForFree) {
+                                                if (plan?.durationType === 'sevenDays' && feature.availableForFree) {
                                                     return <FeatureCart key={index} feature={feature} />;
                                                 }
-                                                if (plan.durationType === 'monthly' && feature.availableForMonthlyPro) {
+                                                if (plan?.durationType === 'monthly' && feature.availableForMonthlyPro) {
                                                     return <FeatureCart key={index} feature={feature} />;
                                                 }
-                                                if (plan.durationType === 'yearly' && feature.availableForYearlyPro) {
+                                                if (plan?.durationType === 'yearly' && feature.availableForYearlyPro) {
                                                     return <FeatureCart key={index} feature={feature} />;
                                                 }
                                                 return null;
@@ -251,12 +339,12 @@ const FinancialPlanCard = ({ plan }: any) => {
                                     </Box>
                                 </Collapse>
                             </TableCell>
-                        </TableRow>
+                        </TableRow> */}
                     </TableBody>
                 </Table>
             </TableContainer>
             {/* update plan */}
-            <DetailsNavBar
+            {/* <DetailsNavBar
                 open={openChangePlan}
                 onClose={() => setOpenChangePlan(false)}
                 title={`Update Your Plan`}
@@ -293,7 +381,7 @@ const FinancialPlanCard = ({ plan }: any) => {
                             fullWidth
                             variant="filled"
                             name="en"
-                            defaultValue={plan.name.en}
+                            defaultValue={plan?.name?.en}
                         />
                         <Typography
                             component="p"
@@ -307,7 +395,7 @@ const FinancialPlanCard = ({ plan }: any) => {
                             fullWidth
                             variant="filled"
                             name="ar"
-                            defaultValue={plan.name.ar}
+                            defaultValue={plan?.name?.ar}
                         />
                         <Typography
                             component="p"
@@ -321,7 +409,7 @@ const FinancialPlanCard = ({ plan }: any) => {
                             fullWidth
                             variant="filled"
                             name="tr"
-                            defaultValue={plan.name.tr}
+                            defaultValue={plan?.name?.tr}
                         />
                         <Typography
                             component="p"
@@ -335,7 +423,7 @@ const FinancialPlanCard = ({ plan }: any) => {
                             fullWidth
                             variant="filled"
                             name="es"
-                            defaultValue={plan.name.es}
+                            defaultValue={plan?.name?.es}
                         />
                         <Typography
                             component="p"
@@ -349,7 +437,7 @@ const FinancialPlanCard = ({ plan }: any) => {
                             fullWidth
                             variant="filled"
                             name="fr"
-                            defaultValue={plan.name.fr}
+                            defaultValue={plan?.name?.fr}
                         />
                         <Typography
                             component="p"
@@ -576,7 +664,7 @@ const FinancialPlanCard = ({ plan }: any) => {
                             fullWidth
                             variant="filled"
                             name="branchNumberFeature.en"
-                            defaultValue={plan?.limitAccess.branchNumberFeature?.en}
+                            defaultValue={plan?.limitAccess?.branchNumberFeature?.en}
                         />
                         <Typography
                             component="p"
@@ -636,7 +724,7 @@ const FinancialPlanCard = ({ plan }: any) => {
                         />
                     </Box>
                 </FormProvider>
-            </DetailsNavBar>
+            </DetailsNavBar> */}
         </>
     );
 };

@@ -66,7 +66,7 @@ export default function Header({ onOpenNav }: Props) {
   const router = useRouter()
   const { categoury } = useParams()
   const allBussinessCategouryRes = useGetAllBussinessCategouryQuery('')
-  const selectedCat = allBussinessCategouryRes?.data?.data?.data?.find((el: any) => el.uniqueName.toLowerCase() === categoury.toString().toLowerCase())
+  const selectedCat = allBussinessCategouryRes?.data?.data?.data?.find((el: any) => el.uniqueName?.toLowerCase() === categoury?.toString()?.toLowerCase())
   const [openAddCategoury, setOpenAddCategoury] = useState(false)
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
