@@ -6,11 +6,13 @@ import { useParams } from 'next/navigation'
 import { enqueueSnackbar } from 'notistack'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useSelector } from 'react-redux'
 import { RoleBasedGuard } from 'src/auth/guard'
 import { BottomActions } from 'src/components/bottom-actions'
 import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs'
 import { RHFCheckbox, RHFTextField } from 'src/components/hook-form'
 import FormProvider from 'src/components/hook-form/form-provider'
+import { useSettingsContext } from 'src/components/settings'
 import { useAddNewFeatureMutation, useGetPlansByCatQuery } from 'src/redux/store/services/api'
 import FinancialPlanCard from 'src/sections/plans/FinancialCard'
 import DetailsNavBar from 'src/sections/products/DetailsNavBar'
@@ -18,6 +20,7 @@ import * as Yup from 'yup';
 
 
 const page = () => {
+  const settings = useSettingsContext();
   const { categoury } = useParams()
   const response = useGetPlansByCatQuery(categoury.toString().toLowerCase())
   const [openAddFeature, setOpenAddFeature] = useState(false)
@@ -134,7 +137,7 @@ const page = () => {
           </Grid>
         </Box> */}
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: '24px', fontWeight: 900, color: '#0F1349', mt: 1.5 }}>Subscription Plan</Typography>
+          <Typography sx={{ fontSize: '24px', fontWeight: 900, color: settings?.themeMode === "dark" ? "#fff" : '#0F1349', mt: 1.5 }}>Subscription Plan</Typography>
           <Typography sx={{ color: '#8688A3', mt: 0.7 }}>Choose your subscription plan that fit your business.</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', m: '15px 0' }}>
             <Typography>Monthly</Typography>
@@ -143,10 +146,11 @@ const page = () => {
           </Box>
         </Box>
         <Grid container spacing={4} sx={{
-          marginTop: '15px',
-          height: '610px',
+          pt: '15px',
+          height: '630px',
           boxSizing: 'border-box',
           display: 'flex',
+          justifyContent: { sm: 'start', md: 'center' },
           ml: 0,
           overflowX: 'auto', width: '100%',
           overflowY: 'noScroll'

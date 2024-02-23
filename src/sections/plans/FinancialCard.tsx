@@ -2,7 +2,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CheckCircleOutline } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, Collapse, List, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Box, Button, Collapse, FormControl, FormHelperText, Input, List, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -14,12 +14,18 @@ import * as Yup from 'yup';
 import DetailsNavBar from '../products/DetailsNavBar';
 import FeatureCart from './featureCart';
 import DoneIcon from '@mui/icons-material/Done';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const FinancialPlanCard = (
     // { plan }: any
 ) => {
     const plan = {}
+    const [edit, setEdit] = useState({})
+    const [showIcons, setShowIcons] = useState(false)
+    const [inputVal, setInputVal] = useState("")
     // get all features
     const { categoury } = useParams()
     // console.log(plan, " Plan")
@@ -27,6 +33,18 @@ const FinancialPlanCard = (
     // update plan
     const [upatePlanReq, updatePlanRes] = useUpdatePlanMutation()
     const [openChangePlan, setOpenChangePlan] = useState(false)
+    const [data, setData] = useState([])
+    useEffect(() => {
+        setData([{ typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+        // { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+        // { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+        ])
+    }, [])
     const UpdatePlaneSchema = Yup.object().shape({
         name: Yup.object().shape({
             en: Yup.string().required(),
@@ -190,14 +208,17 @@ const FinancialPlanCard = (
             }
         }).unwrap()
     });
-
-
+    // let newData = tempData.map((item, i) => ({
+    //     typ: item.typ,
+    //     iconNo: item.iconNo,
+    //     input: item?.typ
+    // }));
 
 
 
     return (
         <>
-            <TableContainer component={Paper} sx={{ width: { xs: 'calc(100vw - 80px)', sm: '100vw' }, maxWidth: { xs: '600px', sm: '400px' }, minWidth: { xs: '200px', sm: '330px' }, height: { xs: "540px", sm: '600px' }, borderRadius: '20px', boxShadow: "0px 14px 20px #0F134914" }}>
+            <TableContainer component={Paper} sx={{ overflow: 'hidden', width: { xs: 'calc(100vw - 80px)', sm: '100vw' }, maxWidth: { xs: '600px', sm: '414px' }, minWidth: { xs: '200px', sm: '330px' }, height: { xs: "540px", sm: '600px' }, borderRadius: '20px', boxShadow: "0px 14px 20px #0F134914" }}>
                 <Table aria-label="financial plan table">
                     {/* <TableHead>
                         <TableRow>
@@ -210,7 +231,7 @@ const FinancialPlanCard = (
                             <TableCell align="right">Edit Plan</TableCell>
                         </TableRow>
                     </TableHead> */}
-                    <TableBody sx={{ p: { xs: 1.5, sm: 2.5, md: 3.75 }, boxSizing: 'border-box', display: 'flex', flexWrap: 'wrap' }}>
+                    <TableBody sx={{ overflow: 'hidden', p: { xs: 1.5, sm: 2.5, md: 3.75 }, boxSizing: 'border-box', display: 'flex', flexWrap: 'wrap' }}>
                         {/* <TableContainer>
                             <TableRow>
                                 <TableCell component="th" scope="row">
@@ -242,7 +263,7 @@ const FinancialPlanCard = (
                                 </TableCell>
                             </TableRow>
                         </TableContainer> */}
-                        <TableContainer sx={{ overflow: 'hidden' }}>
+                        <TableContainer sx={{ overflowX: 'hidden !important', overflowY: 'auto' }}>
                             <TableRow sx={{ display: 'flex' }}>
                                 <TableContainer>
                                     <TableRow sx={{ textAlign: 'start !important', }}>
@@ -257,62 +278,117 @@ const FinancialPlanCard = (
                                         </TableCell>
                                     </TableRow>
                                 </TableContainer>
-                                <CheckCircleOutline sx={{ width: "58px", height: "47px" }} color={"success"} />
+                                {<CheckCircleOutline sx={{ width: "58px", height: "47px" }} color={"success"} />}
                             </TableRow>
-                            <TableRow sx={{ width: '100%', display: 'flex', m: '18px 0' }}>
+                            {/* <TableRow sx={{ width: '100%', display: 'flex', m: '18px 0' }}>
                                 <Button sx={{
-                                    fontSize: { xs: '16px', sm: '18px' }, color: '#000', width: '100%', maxWidth: '340px', height: { xs: '50px', sm: '60px' }, background: "#1BFCB6", borderRadius: "30px",
+                                    fontSize: { xs: '16px', sm: '18px' }, color: '#000', width: '100%', maxWidth: '340px', height: { xs: '50px', sm: '60px' }, background: "rgb(27, 251, 182)", borderRadius: "30px",
                                     '&:hover': { backgroundColor: '#0DCC9B' },
                                 }} colors={'black'}>Upgrade Now</Button>
-                            </TableRow>
-                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
-                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
-                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
-                                    Lorem Ipsum is typesetting.
-                                </TableCell>
-                            </TableRow>
-                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
-                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
-                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
-                                    Lorem Ipsum is typesetting.
-                                </TableCell>
-                            </TableRow>
-                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
-                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
-                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
-                                    Lorem Ipsum is typesetting.
-                                </TableCell>
-                            </TableRow>
-                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
-                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
-                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
-                                    Lorem Ipsum is typesetting.
-                                </TableCell>
-                            </TableRow>
-                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
-                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
-                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
-                                    Lorem Ipsum is typesetting.
-                                </TableCell>
-                            </TableRow>
-                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
-                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
-                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
-                                    Lorem Ipsum is typesetting.
-                                </TableCell>
-                            </TableRow>
-                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
-                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
-                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
-                                    Lorem Ipsum is typesetting.
-                                </TableCell>
-                            </TableRow>
-                            <TableRow sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mt: '21px' }}>
-                                <DoneIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
-                                <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right" onClick={() => setOpenChangePlan(true)}>
-                                    See More
-                                </TableCell>
-                            </TableRow>
+                            </TableRow> */}
+                            {data?.map((item, index) =>
+                                <TableRow onMouseOver={() => {
+                                    setShowIcons(index + 1)
+                                }} onMouseLeave={() => setShowIcons(false)} sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mb: '21px' }}>
+                                    {(edit?.no === index + 1 && edit?.status === "icon") ?
+                                        <FormControl sx={{ width: '24px', height: '22px' }}>
+                                            <Select sx={{
+                                                display: 'flex',
+                                                flexWrap: 'wrap',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                width: '24px', height: '22px', '& .MuiInputBase-input': {
+                                                    width: '24px', height: '22px', padding: '0 !important'
+                                                },
+                                                '& .MuiSelect-icon': {
+                                                    display: 'none', // Hide the legend element which typically contains the arrow icon
+                                                },
+                                            }}
+                                                value={data[index]?.iconNo}
+                                                onChange={(e) => {
+                                                    let tempData = [...data]
+                                                    tempData[index].iconNo = e?.target?.value
+                                                    setData(tempData)
+                                                }}
+                                                displayEmpty
+                                                inputProps={{ 'aria-label': 'Without label' }}
+                                            >
+                                                <MenuItem value={0}>
+                                                    <DoneIcon onClick={() => {
+                                                        setEdit(false)
+                                                    }} style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} />
+                                                </MenuItem>
+                                                <MenuItem onClick={() => {
+                                                    setEdit(false)
+                                                }} style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '1BFCB6' }} value={1}>
+                                                    <CloseIcon style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '#1BFCB6' }} />
+                                                </MenuItem>
+                                            </Select>
+                                            {/* <FormHelperText>Without label</FormHelperText> */}
+                                        </FormControl>
+                                        :
+                                        //  false
+                                        // {
+                                        !item?.iconNo ?
+                                            <DoneIcon onMouseOver={() => {
+                                                setEdit({ no: index + 1, status: 'icon' })
+                                            }} style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '#1BFCB6' }} /> :
+                                            <CloseIcon onMouseOver={() => {
+                                                setEdit({ no: index + 1, status: 'icon' })
+                                            }} style={{ fontSize: { xs: '23px !important', sm: '29px !important' }, color: '#1BFCB6' }} />
+                                        // }
+                                    }
+                                    <TableCell sx={{ p: 0, pl: { xs: 1, sm: 2, textAlign: 'start' }, borderBottomStyle: 'none', lineHeight: '22px', color: '#8688A3', mb: 0 }} align="right">
+                                        <Box component={'span'} sx={{ width: '100%', display: 'flex', gap: '30px' }}>
+                                            {
+                                                edit?.no === index + 1 && edit?.status === "input" ?
+                                                    <Input sx={{ height: '22px', textAlign: 'start', '& .MuiInputBase-input': { p: 0 } }} value={inputVal} onChange={(e) => {
+                                                        setInputVal(e?.target?.value)
+                                                    }} />
+                                                    :
+                                                    <Typography onMouseOver={() => {
+                                                        setEdit({ no: index + 1, status: 'input' })
+                                                        setInputVal(data[index].typ)
+                                                    }}>
+                                                        {item?.typ}
+                                                    </Typography>
+                                            }
+                                            {
+                                                showIcons === index + 1 ?
+                                                    <Box component={'span'} sx={{ display: 'flex', gap: '10px' }}>
+                                                        <DeleteIcon onClick={async () => {
+                                                            let tempData = await [...data]
+                                                            tempData = tempData?.filter((_, ind) => ind !== index)
+                                                            setData(await tempData)
+                                                            setEdit(false)
+                                                        }} style={{ cursor: 'pointer' }} />
+                                                        <CheckCircleOutlineIcon onClick={async () => {
+                                                            let tempData = await [...data]
+                                                            if (edit?.no === index + 1)
+                                                                tempData[index].typ = await inputVal
+                                                            setData(tempData)
+                                                            setEdit(false)
+                                                        }} style={{ cursor: 'pointer' }} />
+                                                    </Box>
+                                                    :
+                                                    false}
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                            }
+                            <Box sx={{ display: 'flex', gap: '20px'}}>
+                                <Button sx={{ bgcolor: '#1BFCB6', width: '50%', maxWidth: '111px', '&:hover': { bgcolor: '#15c3a7' } }} onClick={async () => {
+                                    setInputVal("")
+                                    let tempData = await [...data]
+                                    tempData.push({ iconNo: 0, typ: '' })
+                                    setData(tempData)
+                                    setEdit({ no: tempData?.length, status: 'input' })
+                                }}>
+                                    Add
+                                </Button>
+                                <Button sx={{ bgcolor: '#1BFCB6', width: '50%', maxWidth: '111px', '&:hover': { bgcolor: '#15c3a7' } }}>Save</Button>
+                            </Box>
                         </TableContainer>
                         {/* Collapsible row for features */}
                         {/* <TableRow>
