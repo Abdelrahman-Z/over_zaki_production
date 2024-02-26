@@ -1,15 +1,15 @@
-// @mui
-'use client'
-import React, { useEffect, useState } from 'react';
-import { useTheme } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
+'use client';
+
 import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
+import Toolbar from '@mui/material/Toolbar';
+import { useTheme } from '@mui/material/styles';
+import React, { useEffect, useState } from 'react';
 
-import IconButton from '@mui/material/IconButton';
 import { Box, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 // theme
 import { bgBlur } from 'src/theme/css';
 // hooks
@@ -17,37 +17,33 @@ import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
 // components
 import Logo from 'src/components/logo';
-import SvgColor from 'src/components/svg-color';
 import { useSettingsContext } from 'src/components/settings';
+import SvgColor from 'src/components/svg-color';
 import * as Yup from 'yup';
 
 //
-import { HEADER, NAV } from '../config-layout';
-import {
-  Searchbar,
-  AccountPopover,
-  SettingsButton,
-  LanguagePopover,
-  ContactsPopover,
-  NotificationsPopover,
-} from '../_common';
-import { AppDispatch, RootState } from 'src/redux/store/store';
-import { useDispatch } from 'react-redux';
-import { fetchBuilderList, setBuilder } from 'src/redux/store/thunks/builder';
-import { useSelector } from 'react-redux';
-import { useAddNewBussinuseCategouryMutation, useEditBussinuseCategouryMutation, useGetAllBussinessCategouryQuery } from 'src/redux/store/services/api';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
-import DetailsNavBar from 'src/sections/products/DetailsNavBar';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import Iconify from 'src/components/iconify/iconify';
 import { UploadBox } from 'src/components/upload';
-import { enqueueSnackbar } from 'notistack';
+import { useAddNewBussinuseCategouryMutation, useEditBussinuseCategouryMutation, useGetAllBussinessCategouryQuery, useGetPlansByCatQuery } from 'src/redux/store/services/api';
+import DetailsNavBar from 'src/sections/products/DetailsNavBar';
+import {
+  AccountPopover,
+  ContactsPopover,
+  LanguagePopover,
+  NotificationsPopover,
+  Searchbar,
+  SettingsButton,
+} from '../_common';
+import { HEADER, NAV } from '../config-layout';
 import CategouryItem from './categouryItem';
-import { PathnameContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
 
 // ----------------------------------------------------------------------
 
@@ -70,24 +66,33 @@ export default function Header({ onOpenNav }: Props) {
   const [openAddCategoury, setOpenAddCategoury] = useState(false)
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
+  const dispatch = useDispatch()
+  const [select, setSelect] = useState(0)
+  const response = useGetPlansByCatQuery(allBussinessCategouryRes.data?.data?.data[select]?.name?.en)
   const [openItems, setOpenItems] = React.useState<any>({
     open: false,
     item: null
   });
   const [categouryData, setCategouryData] = useState<any>(null);
-
-
+  console.log("Response: ", response)
+console.log(categoury, " categoury")
   const handleOpen = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     setOpenItems({
       item: event.currentTarget,
       open: true
     });
   }, []);
-  const handleClose = (categoury: any) => {
+  const handleClose = (categoury: any, number: Number) => {
+    console.log("number: ", number)
+    console.log("categoury: ", categoury)
     if (categoury) {
+      setSelect(number)
       const arr = pathName.split('/')
       arr[2] = categoury.uniqueName.toLowerCase()
-      router.push(arr.join('/'))
+      console.log(arr.join('/'))
+      window.location.href = arr.join('/');
+      // router.push(arr.join('/'));
+      console.log("pushed")
     }
     setOpenItems({
       item: null,
@@ -285,7 +290,7 @@ export default function Header({ onOpenNav }: Props) {
 
 
       {smUp && (
-        <Box sx={{ transition: 'all .5s', minWidth: '160px' }} onClick={handleOpen}  >
+        <Box sx={{ transition: 'all .5s', minWidth: '160px', height: '80px' }} onClick={handleOpen}  >
 
 
 

@@ -13,7 +13,7 @@ import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs'
 import { RHFCheckbox, RHFTextField } from 'src/components/hook-form'
 import FormProvider from 'src/components/hook-form/form-provider'
 import { useSettingsContext } from 'src/components/settings'
-import { useAddNewFeatureMutation, useGetPlansByCatQuery } from 'src/redux/store/services/api'
+import { useAddNewFeatureMutation, useGetAllBussinessCategouryQuery, useGetPlansByCatQuery } from 'src/redux/store/services/api'
 import FinancialPlanCard from 'src/sections/plans/FinancialCard'
 import DetailsNavBar from 'src/sections/products/DetailsNavBar'
 import * as Yup from 'yup';
@@ -22,11 +22,15 @@ import * as Yup from 'yup';
 const page = () => {
   const settings = useSettingsContext();
   const { categoury } = useParams()
-  const response = useGetPlansByCatQuery(categoury.toString().toLowerCase())
+  // const response = useGetPlansByCatQuery(categoury.toString().toLowerCase())
   const [openAddFeature, setOpenAddFeature] = useState(false)
   const [addFeatureReq, addFeatureRes] = useAddNewFeatureMutation();
+  const allBussinessCategouryRes = useGetAllBussinessCategouryQuery()
+  // console.log("Page AllBussinnes: ", allBussinessCategouryRes?.data?.data?.data)
+  const select = !!allBussinessCategouryRes?.data?.data?.data && Object?.values(allBussinessCategouryRes?.data?.data?.data)?.findIndex((item, index) => item?.uniqueName?.toLowerCase() === categoury)
+  const response = useGetPlansByCatQuery(allBussinessCategouryRes.data?.data?.data[select]?.uniqueName)
 
-  // console.log(response)
+  // console.log("Page Response: ", response)
   const AddFeatureSchema = Yup.object().shape({
     content: Yup.object().shape({
       en: Yup.string().required('English content is required'),
@@ -87,12 +91,18 @@ const page = () => {
     }
   }, [addFeatureRes, resetAddFeatureForm]);
 
-  const onAddFeature = handleAddFeatureSubmit(async (data) => {
-    await addFeatureReq({
+  // const onAddFeature = handleAddFeatureSubmit(async (data) => {
+  //   await addFeatureReq({
+  //     category: categoury.toString().toLowerCase(),
+  //     features: [data]
+  //   }).unwrap();
+  // });
+  const onAddFeature = (data: any) => {
+    addFeatureReq({
       category: categoury.toString().toLowerCase(),
-      features: [data]
+      features: [{...data}]
     }).unwrap();
-  });
+  };
 
 
   return (
@@ -146,12 +156,17 @@ const page = () => {
           </Box>
         </Box>
         <Grid container spacing={4} sx={{
-          pt: '15px',
-          height: '630px',
+          // pt: '15px',
+          p: '15px',
+          pb: 0,
+          // height: '650px',
           boxSizing: 'border-box',
           display: 'flex',
-          justifyContent: { sm: 'start', md: 'center' },
+          height: '633px',
+          justifyContent: { sm: 'start', md: !!response?.data?.data?.plans && Object?.values(response?.data?.data?.plans)?.length > 2 ? 'start !important' : 'center !important' },
+          // justifyContent: { sm: 'start', md: 'center' },
           ml: 0,
+          margin: '0 !important',
           overflowX: 'auto', width: '100%',
           overflowY: 'noScroll'
         }}>
@@ -159,17 +174,20 @@ const page = () => {
             position: 'relative',
             boxSizing: 'border-box',
             gap: { xs: 2, sm: 3 },
-            display: 'flex', height: '610px',
+            display: 'flex', 
             flexDirection: 'row',
-            justifyContent: { sm: 'start', md: 'center' },
+            justifyContent: { sm: 'start', md: !!response?.data?.data?.plans && Object?.values(response?.data?.data?.plans)?.length > 2 ? 'start !important' : 'center !important' },
             alignItems: 'center',
-            width: { xs: '820px', sm: '850px' }
+            width: { xs: '820px', sm: '850px' },
+            // mt: '30px'
           }}>
-            {/* {!!response?.data?.data?.plans && Object.values(response?.data?.data?.plans)?.filter((item, index) => index < 2)?.map((el: any) =>  */}
-            <FinancialPlanCard />
-            <FinancialPlanCard />
+            {!!response?.data?.data?.plans && Object.values(response?.data?.data?.plans)?.filter((it) => it?.type != "basic")?.map((el: any) => (
+            <Box>
+            <FinancialPlanCard onAddFeature={onAddFeature} plan={el} features={!!response?.data?.data?.feature && Object.values(response?.data?.data?.feature)}/>
+            {/* <FinancialPlanCard plans={el} features={!!response?.data?.data?.plans && Object.values(response?.data?.data?.plans)[0]?.data?.data?.feature}/> */}
           </Box>
-        {/* )} */}
+        ))}
+        </Box>
         </Grid>
       </Container>
       <DetailsNavBar

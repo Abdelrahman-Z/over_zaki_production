@@ -28,7 +28,7 @@ const CategouryItem = ({ categoury, handleClose, number, setCatIndex, setOpenEdi
         <>
             <MenuItem selected={categoury?._id === selectedDomain?._id} sx={{ marginBottom: "20px", minWidth: 250 }} >
                 <Stack direction='row' display={'flex'} width={'100%'} justifyContent={'space-between'} alignItems='center' >
-                    <Stack direction='row' flex={1} alignItems='center' spacing="4px" onClick={() => handleClose(categoury)} >
+                    <Stack direction='row' flex={1} alignItems='center' spacing="4px" onClick={() => handleClose(categoury, number)} >
                         <Box component='img' src={categoury?.image}
                             sx={{
                                 width: '40px',

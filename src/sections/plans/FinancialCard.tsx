@@ -17,12 +17,14 @@ import DoneIcon from '@mui/icons-material/Done';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import { fNumber } from 'src/utils/format-number';
 
 
 const FinancialPlanCard = (
-    // { plan }: any
+    { plan, features, onAddFeature }: any
 ) => {
-    const plan = {}
+
+    // const plan = {}
     const [edit, setEdit] = useState({})
     const [showIcons, setShowIcons] = useState(false)
     const [inputVal, setInputVal] = useState("")
@@ -34,17 +36,37 @@ const FinancialPlanCard = (
     const [upatePlanReq, updatePlanRes] = useUpdatePlanMutation()
     const [openChangePlan, setOpenChangePlan] = useState(false)
     const [data, setData] = useState([])
+    // console.log(features, " features");
+    // console.log(plan, " Plan")
+    // const [addFeatureReq, addFeatureRes] = useAddNewFeatureMutation();
+
+    //     const feature = [{
+    //         features?.map((item, index) => 
+
+    //             typ: item, iconNo: 9
+
+    //         )
+    // }]
+
+
     useEffect(() => {
-        setData([{ typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
-        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
-        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
-        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
-        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
-        { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
-        // { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
-        // { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
-        ])
+        setData(features?.filter((it: any) => it[(plan?.type === "pro" ? 'available' : 'availableFor') + plan?.type?.charAt(0).toUpperCase() + plan?.type?.slice(1)])?.map((item: any) => ({ typ: item?.content?.en, iconNo: 0 })));
     }, [])
+
+    // useEffect(() => {
+    //     setData([
+    //     { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+    //     { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+    //     { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+    //     { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+    //     { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+    //     { typ: "Lorem Ipsum is typesetting.", iconNo: 0 },
+    //     ])
+    //     // setData(!!features && features?.map((item, index) => {
+    //     //     item.typ = item 
+    //     //     item.iconNo = 0 
+    //     // }))
+    // }, [])
     const UpdatePlaneSchema = Yup.object().shape({
         name: Yup.object().shape({
             en: Yup.string().required(),
@@ -213,13 +235,13 @@ const FinancialPlanCard = (
     //     iconNo: item.iconNo,
     //     input: item?.typ
     // }));
-
-
-
     return (
         <>
-            <TableContainer component={Paper} sx={{ overflow: 'hidden', width: { xs: 'calc(100vw - 80px)', sm: '100vw' }, maxWidth: { xs: '600px', sm: '414px' }, minWidth: { xs: '200px', sm: '330px' }, height: { xs: "540px", sm: '600px' }, borderRadius: '20px', boxShadow: "0px 14px 20px #0F134914" }}>
-                <Table aria-label="financial plan table">
+            {/* // component={Paper}  */}
+            <TableContainer>
+                <Table aria-label="financial plan table"
+                    sx={{ bgcolor: 'white', overflow: 'hidden', width: { xs: 'calc(100vw - 80px)', sm: '100vw' }, maxWidth: { xs: '420px', sm: '420px' }, minWidth: { xs: '200px', sm: '330px' }, height: { xs: "540px", sm: '580px' }, borderRadius: '20px', boxShadow: "0px 14px 20px #0F134914", mb: '20px' }}>
+
                     {/* <TableHead>
                         <TableRow>
                             <TableCell>Plan Type</TableCell>
@@ -231,7 +253,7 @@ const FinancialPlanCard = (
                             <TableCell align="right">Edit Plan</TableCell>
                         </TableRow>
                     </TableHead> */}
-                    <TableBody sx={{ overflow: 'hidden', p: { xs: 1.5, sm: 2.5, md: 3.75 }, boxSizing: 'border-box', display: 'flex', flexWrap: 'wrap' }}>
+                    <TableBody sx={{ bgcolor: '#fff', overflow: 'hidden', p: { xs: 1.5, sm: 2.5, md: 3.75 }, boxSizing: 'border-box', display: 'flex', flexWrap: 'wrap' }}>
                         {/* <TableContainer>
                             <TableRow>
                                 <TableCell component="th" scope="row">
@@ -263,20 +285,20 @@ const FinancialPlanCard = (
                                 </TableCell>
                             </TableRow>
                         </TableContainer> */}
-                        <TableContainer sx={{ overflowX: 'hidden !important', overflowY: 'auto' }}>
+                        <TableContainer sx={{ overflowX: 'hidden !important', overflowY: 'auto'}}>
                             <TableRow sx={{ display: 'flex' }}>
                                 <TableContainer>
                                     <TableRow sx={{ textAlign: 'start !important', }}>
-                                        <TableCell sx={{ borderBottomStyle: 'none', padding: '1px', fontSize: '20px', fontWeight: 'bold' }} >Pro Plan</TableCell>
+                                        <TableCell sx={{ borderBottomStyle: 'none', padding: '1px', fontSize: '20px', fontWeight: 'bold' }} >{plan?.name?.en}</TableCell>
                                     </TableRow>
                                     <TableRow sx={{ textAlign: 'start !important', }}>
-                                        <TableCell sx={{ borderBottomStyle: 'none', lineHeight: '25px', padding: '0', fontSize: '16px', fontWeight: 'bold' }} align="right">100 KWD/year</TableCell>
+                                        <TableCell sx={{ borderBottomStyle: 'none', lineHeight: '25px', padding: '0', fontSize: '16px', fontWeight: 'bold', textAlign: 'start' }} align="right">{fNumber(plan?.price)}</TableCell>
                                     </TableRow>
-                                    <TableRow sx={{ textAlign: 'start !important', }}>
+                                    {/* <TableRow sx={{ textAlign: 'start !important', }}>
                                         <TableCell sx={{ borderBottomStyle: 'none', lineHeight: '22px', padding: '0', fontSize: '14px', fontWeight: '500', color: 'gray', textDecoration: 'line-through' }} component="th" scope="row">
                                             120 KWD/year
                                         </TableCell>
-                                    </TableRow>
+                                    </TableRow> */}
                                 </TableContainer>
                                 {<CheckCircleOutline sx={{ width: "58px", height: "47px" }} color={"success"} />}
                             </TableRow>
@@ -286,10 +308,11 @@ const FinancialPlanCard = (
                                     '&:hover': { backgroundColor: '#0DCC9B' },
                                 }} colors={'black'}>Upgrade Now</Button>
                             </TableRow> */}
+                            {/* {features?.map((item, index) => !!item && )} */}
                             {data?.map((item, index) =>
                                 <TableRow onMouseOver={() => {
                                     setShowIcons(index + 1)
-                                }} onMouseLeave={() => setShowIcons(false)} sx={{ display: 'flex', alignItems: 'start', height: '22.5px', mb: '21px' }}>
+                                }} onMouseLeave={() => setShowIcons(false)} sx={{ display: 'flex', alignItems: 'start', height: '22.5px', m: '20px 0 !important' }}>
                                     {(edit?.no === index + 1 && edit?.status === "icon") ?
                                         <FormControl sx={{ width: '24px', height: '22px' }}>
                                             <Select sx={{
@@ -342,12 +365,17 @@ const FinancialPlanCard = (
                                         <Box component={'span'} sx={{ width: '100%', display: 'flex', gap: '30px' }}>
                                             {
                                                 edit?.no === index + 1 && edit?.status === "input" ?
-                                                    <Input sx={{ height: '22px', textAlign: 'start', '& .MuiInputBase-input': { p: 0 } }} value={inputVal} onChange={(e) => {
+                                                    <Input sx={{
+                                                        fontSize: '16px', height: '22px', textAlign: 'start', '& .MuiInputBase-input': {
+                                                            p: 0, fontSize: '16px'
+                                                        }
+                                                    }} value={inputVal} onChange={(e) => {
                                                         setInputVal(e?.target?.value)
                                                     }} />
                                                     :
                                                     <Typography onMouseOver={() => {
-                                                        setEdit({ no: index + 1, status: 'input' })
+                                                        if (inputVal !== "")
+                                                            setEdit({ no: index + 1, status: 'input' })
                                                         setInputVal(data[index].typ)
                                                     }}>
                                                         {item?.typ}
@@ -363,10 +391,13 @@ const FinancialPlanCard = (
                                                             setEdit(false)
                                                         }} style={{ cursor: 'pointer' }} />
                                                         <CheckCircleOutlineIcon onClick={async () => {
-                                                            let tempData = await [...data]
-                                                            if (edit?.no === index + 1)
-                                                                tempData[index].typ = await inputVal
-                                                            setData(tempData)
+                                                            if (edit)
+                                                                onAddFeature({ content: {en: inputVal, ar: inputVal, es: inputVal, tr: inputVal, fr: inputVal, de: inputVal},
+                                                            availableForBasic: plan?.type === "basic", availableForAdvance: plan?.type === "advance", availablePro: plan?.type === "pro"})
+                                                            // let tempData = await [...data]
+                                                            // if (edit?.no === index + 1)
+                                                            //     tempData[index].typ = await inputVal
+                                                            // setData(tempData)
                                                             setEdit(false)
                                                         }} style={{ cursor: 'pointer' }} />
                                                     </Box>
@@ -377,7 +408,7 @@ const FinancialPlanCard = (
                                 </TableRow>
                             )
                             }
-                            <Box sx={{ display: 'flex', gap: '20px'}}>
+                            <Box sx={{ display: 'flex', gap: '20px' }}>
                                 <Button sx={{ bgcolor: '#1BFCB6', width: '50%', maxWidth: '111px', '&:hover': { bgcolor: '#15c3a7' } }} onClick={async () => {
                                     setInputVal("")
                                     let tempData = await [...data]
