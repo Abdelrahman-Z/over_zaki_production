@@ -1,36 +1,44 @@
-'use client'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Container, Grid, Stack, Switch, Typography } from '@mui/material'
-import { useParams } from 'next/navigation'
-import { enqueueSnackbar } from 'notistack'
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useSelector } from 'react-redux'
-import { RoleBasedGuard } from 'src/auth/guard'
-import { BottomActions } from 'src/components/bottom-actions'
-import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs'
-import { RHFCheckbox, RHFTextField } from 'src/components/hook-form'
-import FormProvider from 'src/components/hook-form/form-provider'
-import { useSettingsContext } from 'src/components/settings'
-import { useAddNewFeatureMutation, useGetAllBussinessCategouryQuery, useGetPlansByCatQuery } from 'src/redux/store/services/api'
-import FinancialPlanCard from 'src/sections/plans/FinancialCard'
-import DetailsNavBar from 'src/sections/products/DetailsNavBar'
+'use client';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { LoadingButton } from '@mui/lab';
+import { Box, Button, Container, Grid, Stack, Switch, Typography } from '@mui/material';
+import { useParams } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { RoleBasedGuard } from 'src/auth/guard';
+import { BottomActions } from 'src/components/bottom-actions';
+import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs';
+import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
+import FormProvider from 'src/components/hook-form/form-provider';
+import { useSettingsContext } from 'src/components/settings';
+import {
+  useAddNewFeatureMutation,
+  useGetAllBussinessCategouryQuery,
+  useGetPlansByCatQuery,
+} from 'src/redux/store/services/api';
+import FinancialPlanCard from 'src/sections/plans/FinancialCard';
+import DetailsNavBar from 'src/sections/products/DetailsNavBar';
 import * as Yup from 'yup';
-
+import AddIcon from '@mui/icons-material/Add';
 
 const page = () => {
   const settings = useSettingsContext();
-  const { categoury } = useParams()
-  // const response = useGetPlansByCatQuery(categoury.toString().toLowerCase())
-  const [openAddFeature, setOpenAddFeature] = useState(false)
+  const { categoury } = useParams();
+  const [openAddFeature, setOpenAddFeature] = useState(false);
   const [addFeatureReq, addFeatureRes] = useAddNewFeatureMutation();
-  const allBussinessCategouryRes = useGetAllBussinessCategouryQuery()
-  // console.log("Page AllBussinnes: ", allBussinessCategouryRes?.data?.data?.data)
-  const select = !!allBussinessCategouryRes?.data?.data?.data && Object?.values(allBussinessCategouryRes?.data?.data?.data)?.findIndex((item, index) => item?.uniqueName?.toLowerCase() === categoury)
-  const response = useGetPlansByCatQuery(allBussinessCategouryRes.data?.data?.data[select]?.uniqueName)
-
-  // console.log("Page Response: ", response)
+  const allBussinessCategouryRes = useGetAllBussinessCategouryQuery();
+  const select =
+    !!allBussinessCategouryRes?.data?.data?.data &&
+    Object?.values(allBussinessCategouryRes?.data?.data?.data)?.findIndex(
+      (item, index) => item?.uniqueName?.toLowerCase() === categoury
+    );
+  const response = useGetPlansByCatQuery(
+    allBussinessCategouryRes.data?.data?.data[select]?.uniqueName
+  );
+  const [features, setFeatures] = useState(response?.data?.data?.feature);
+  const [isMonthly, setIsMonthly] = useState(true);
   const AddFeatureSchema = Yup.object().shape({
     content: Yup.object().shape({
       en: Yup.string().required('English content is required'),
@@ -39,9 +47,9 @@ const page = () => {
       tr: Yup.string().required('Turkish content is required'),
       fr: Yup.string().required('France content is required'),
     }),
-    availableForYearlyPro: Yup.boolean(),
-    availableForMonthlyPro: Yup.boolean(),
-    availableForFree: Yup.boolean(),
+    availableForAdvance: Yup.boolean(),
+    availablePro: Yup.boolean(),
+    availableForBasic: Yup.boolean(),
   });
   const addFeatureMethods = useForm({
     resolver: yupResolver(AddFeatureSchema),
@@ -53,17 +61,17 @@ const page = () => {
         tr: '', // Default value for Spanish content
         fr: '', // Default value for Spanish content
       },
-      availableForYearlyPro: false, // Default value for availableForPro
-      availableForMonthlyPro: false, // Default value for availableForFree
-      availableForFree: false, // Default value for availableForFree
-    }
+      availableForAdvance: false, // Default value for availableForPro
+      availablePro: false, // Default value for availableForBasic
+      availableForBasic: false, // Default value for availableForBasic
+    },
   });
   const {
     reset: resetAddFeatureForm,
     handleSubmit: handleAddFeatureSubmit,
     formState: { isSubmitting: isSubmittingAddFeature },
     control,
-  } = addFeatureMethods
+  } = addFeatureMethods;
 
   useEffect(() => {
     if (!openAddFeature) {
@@ -75,119 +83,158 @@ const page = () => {
           tr: '', // Default value for Spanish content
           fr: '', // Default value for Spanish content
         },
-        availableForFree: false, // Default value for availableForPro
-        availableForYearlyPro: false, // Default value for availableForFree
-        availableForMonthlyPro: false, // Default value for availableForFree
+        availableForBasic: false, // Default value for availableForPro
+        availableForAdvance: false, // Default value for availableForBasic
+        availablePro: false, // Default value for availableForBasic
       }); // Reset the form when the modal is closed
     }
   }, [openAddFeature, resetAddFeatureForm]);
 
   useEffect(() => {
     if (addFeatureRes.isSuccess) {
-      enqueueSnackbar('Feature added successfully', { variant: "success" });
+      enqueueSnackbar('Feature added successfully', { variant: 'success' });
     }
     if (addFeatureRes.isError) {
-      enqueueSnackbar('Cannot add the feature', { variant: "error" });
+      enqueueSnackbar('Cannot add the feature', { variant: 'error' });
     }
   }, [addFeatureRes, resetAddFeatureForm]);
 
-  // const onAddFeature = handleAddFeatureSubmit(async (data) => {
-  //   await addFeatureReq({
-  //     category: categoury.toString().toLowerCase(),
-  //     features: [data]
-  //   }).unwrap();
-  // });
-  const onAddFeature = (data: any) => {
-    addFeatureReq({
-      category: categoury.toString().toLowerCase(),
-      features: [{...data}]
+  const onAddFeature = handleAddFeatureSubmit(async (data) => {
+    console.log('data:', data);
+    const link = categoury.toString();
+    await addFeatureReq({
+      category: link[0]?.toUpperCase() + link.slice(1),
+      features: [data],
     }).unwrap();
-  };
-
+    setOpenAddFeature(false);
+  });
+  useEffect(() => {
+    setFeatures(response?.data?.data?.feature);
+  }, [response?.data?.data?.feature]);
 
   return (
     <>
-      <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {/* <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between', // Adjust as needed for layout
-            mt: 2, // Margin top for spacing
-            gap: 5,
-            alignItems: 'center',
-          }}
-        >
-          <Grid xs={12} md="auto">
-            <CustomCrumbs heading="Plans" crums={false} />
-          </Grid>
-          <Grid sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <BottomActions>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                alignItems="center"
-                justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
-                spacing="20px"
-                sx={{ width: '100%', maxWidth: { xs: '100%', md: '250px' } }}
-              >
-                <Button
-                  startIcon="+"
-                  fullWidth
-                  sx={{ borderRadius: '30px', color: '#0F1349' }}
-                  component="button"
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    setOpenAddFeature(true)
-                  }}
-                >
-                  Add New Feature
-                </Button>
-              </Stack>
-            </BottomActions>
-          </Grid>
-        </Box> */}
+      <Container
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          position: 'relative',
+        }}
+      >
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: '24px', fontWeight: 900, color: settings?.themeMode === "dark" ? "#fff" : '#0F1349', mt: 1.5 }}>Subscription Plan</Typography>
-          <Typography sx={{ color: '#8688A3', mt: 0.7 }}>Choose your subscription plan that fit your business.</Typography>
+          <Typography
+            sx={{
+              fontSize: '24px',
+              fontWeight: 900,
+              color: settings?.themeMode === 'dark' ? '#fff' : '#0F1349',
+              mt: 1.5,
+            }}
+          >
+            Subscription Plan
+          </Typography>
+          <Typography sx={{ color: '#8688A3', mt: 0.7, height: { xs: '48px', sm: '24px' } }}>
+            Choose your subscription plan that fit your business.
+          </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', m: '15px 0' }}>
             <Typography>Monthly</Typography>
-            <Switch inputProps={{ 'aria-label': 'Month' }} defaultChecked style={{ '& .MuiSwitch-track': { backgroundColor: '#1BFCB6' } }} />
+            <Switch
+              inputProps={{ 'aria-label': 'Month' }}
+              checked={!isMonthly}
+              onChange={() => setIsMonthly((val) => !val)}
+              style={{ '& .MuiSwitch-track': { backgroundColor: '#1BFCB6' } }}
+            />
             <Typography>Yearly</Typography>
           </Box>
+          <Button
+            sx={{
+              heigth: '60px',
+              borderRadius: '20px',
+              alignSelf: 'flex-end',
+              gap: '10px',
+              background: '#1BFCB6',
+              '&:hover': {
+                background: '#19c6a0',
+              },
+              // width: { xs: '20px', sm: 'auto' },
+              p: { xs: '4px 8px', sm: '6px 10px', md: '8px 16px' },
+              top: { xs: '120px', sm: '90px' },
+              minWidth: '32px',
+              right: { xs: '10px', sm: '20px' },
+              position: 'absolute',
+              // top: '20px',
+            }}
+            onClick={() => setOpenAddFeature(true)}
+          >
+            <Typography sx={{ display: { xs: 'none', sm: 'flex' } }}>Add New Feature</Typography>
+            {/* <Typography sx={{ display: { xs: 'flex', sm: 'none' } }}>Add</Typography> */}
+            <AddIcon />
+          </Button>
         </Box>
-        <Grid container spacing={4} sx={{
-          // pt: '15px',
-          p: '15px',
-          pb: 0,
-          // height: '650px',
-          boxSizing: 'border-box',
-          display: 'flex',
-          height: '633px',
-          justifyContent: { sm: 'start', md: !!response?.data?.data?.plans && Object?.values(response?.data?.data?.plans)?.length > 2 ? 'start !important' : 'center !important' },
-          // justifyContent: { sm: 'start', md: 'center' },
-          ml: 0,
-          margin: '0 !important',
-          overflowX: 'auto', width: '100%',
-          overflowY: 'noScroll'
-        }}>
-          <Box sx={{
-            position: 'relative',
+        <Grid
+          container
+          spacing={4}
+          sx={{
+            // pt: '15px',
+            p: '15px',
+            pb: 0,
+            height: '650px',
             boxSizing: 'border-box',
-            gap: { xs: 2, sm: 3 },
-            display: 'flex', 
-            flexDirection: 'row',
-            justifyContent: { sm: 'start', md: !!response?.data?.data?.plans && Object?.values(response?.data?.data?.plans)?.length > 2 ? 'start !important' : 'center !important' },
-            alignItems: 'center',
-            width: { xs: '820px', sm: '850px' },
-            // mt: '30px'
-          }}>
-            {!!response?.data?.data?.plans && Object.values(response?.data?.data?.plans)?.filter((it) => it?.type != "basic")?.map((el: any) => (
-            <Box>
-            <FinancialPlanCard onAddFeature={onAddFeature} plan={el} features={!!response?.data?.data?.feature && Object.values(response?.data?.data?.feature)}/>
-            {/* <FinancialPlanCard plans={el} features={!!response?.data?.data?.plans && Object.values(response?.data?.data?.plans)[0]?.data?.data?.feature}/> */}
+            display: 'flex',
+            // height: '633px',
+            justifyContent: {
+              sm: 'start',
+              md:
+                !!response?.data?.data?.plans &&
+                Object?.values(response?.data?.data?.plans)?.length > 2
+                  ? 'start !important'
+                  : 'center !important',
+            },
+            // justifyContent: { sm: 'start', md: 'center' },
+            ml: 0,
+            margin: '0 !important',
+            overflowX: 'auto',
+            width: '100%',
+            overflowY: 'hidden',
+          }}
+        >
+          <Box
+            sx={{
+              position: 'relative',
+              boxSizing: 'border-box',
+              gap: { xs: 2, sm: 3 },
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: {
+                sm: 'start',
+                md:
+                  !!response?.data?.data?.plans &&
+                  Object?.values(response?.data?.data?.plans)?.length > 2
+                    ? 'start !important'
+                    : 'center !important',
+              },
+              alignItems: 'center',
+              width: { xs: '820px', sm: '850px' },
+              // mt: '30px'
+            }}
+          >
+            {response?.data?.data?.plans
+              ?.filter(
+                (item) =>
+                  item?.type != 'basic' &&
+                  (isMonthly ? item?.durationType == 'monthly' : item?.durationType != 'monthly')
+              )
+              ?.map((el: any) => (
+                <Box>
+                  <FinancialPlanCard
+                    onAddFeature={onAddFeature}
+                    plan={el}
+                    features={features}
+                    setFeatures={setFeatures}
+                  />
+                </Box>
+              ))}
           </Box>
-        ))}
-        </Box>
         </Grid>
       </Container>
       <DetailsNavBar
@@ -203,8 +250,7 @@ const page = () => {
               size="large"
               loading={isSubmittingAddFeature}
               onClick={() => {
-                onAddFeature()
-                setOpenAddFeature(false)
+                onAddFeature();
               }}
               sx={{ borderRadius: '30px' }}
             >
@@ -223,13 +269,7 @@ const page = () => {
             >
               EN
             </Typography>
-            <RHFTextField
-              fullWidth
-              variant="filled"
-              name="content.en"
-              multiline
-              rows={5}
-            />
+            <RHFTextField fullWidth variant="filled" name="content.en" multiline rows={5} />
             <Typography
               component="p"
               noWrap
@@ -238,13 +278,7 @@ const page = () => {
             >
               AR
             </Typography>
-            <RHFTextField
-              fullWidth
-              variant="filled"
-              name="content.ar"
-              multiline
-              rows={5}
-            />
+            <RHFTextField fullWidth variant="filled" name="content.ar" multiline rows={5} />
             <Typography
               component="p"
               noWrap
@@ -253,13 +287,7 @@ const page = () => {
             >
               ES
             </Typography>
-            <RHFTextField
-              fullWidth
-              variant="filled"
-              name="content.es"
-              multiline
-              rows={5}
-            />
+            <RHFTextField fullWidth variant="filled" name="content.es" multiline rows={5} />
             <Typography
               component="p"
               noWrap
@@ -268,13 +296,7 @@ const page = () => {
             >
               FR
             </Typography>
-            <RHFTextField
-              fullWidth
-              variant="filled"
-              name="content.fr"
-              multiline
-              rows={5}
-            />
+            <RHFTextField fullWidth variant="filled" name="content.fr" multiline rows={5} />
             <Typography
               component="p"
               noWrap
@@ -283,13 +305,7 @@ const page = () => {
             >
               TR
             </Typography>
-            <RHFTextField
-              fullWidth
-              variant="filled"
-              name="content.tr"
-              multiline
-              rows={5}
-            />
+            <RHFTextField fullWidth variant="filled" name="content.tr" multiline rows={5} />
             <Typography
               component="p"
               noWrap
@@ -299,22 +315,16 @@ const page = () => {
               Avaliblity
             </Typography>
             <RHFCheckbox
-              name="availableForYearlyPro"
-              label="Available for Yearly Pro" // Assuming your RHFCheckbox supports a label prop
+              name="availableForAdvance"
+              label="Available For Advance" // Assuming your RHFCheckbox supports a label prop
             />
-            <RHFCheckbox
-              name="availableForMonthlyPro"
-              label="Available For MonthlyPro"
-            />
-            <RHFCheckbox
-              name="availableForFree"
-              label="Available For Free"
-            />
+            <RHFCheckbox name="availablePro" label="Available For Professional" />
+            <RHFCheckbox name="availableForBasic" label="Available For Basic" />
           </Box>
         </FormProvider>
       </DetailsNavBar>
     </>
-  )
-}
+  );
+};
 
-export default page
+export default page;

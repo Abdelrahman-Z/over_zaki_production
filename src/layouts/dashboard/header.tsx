@@ -74,8 +74,8 @@ export default function Header({ onOpenNav }: Props) {
     item: null
   });
   const [categouryData, setCategouryData] = useState<any>(null);
-  console.log("Response: ", response)
-console.log(categoury, " categoury")
+  // console.log("Response: ", response)
+// console.log(categoury, " categoury")
   const handleOpen = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     setOpenItems({
       item: event.currentTarget,
@@ -83,16 +83,16 @@ console.log(categoury, " categoury")
     });
   }, []);
   const handleClose = (categoury: any, number: Number) => {
-    console.log("number: ", number)
-    console.log("categoury: ", categoury)
+    // console.log("number: ", number)
+    // console.log("categoury: ", categoury)
     if (categoury) {
       setSelect(number)
       const arr = pathName.split('/')
       arr[2] = categoury.uniqueName.toLowerCase()
-      console.log(arr.join('/'))
+      // console.log(arr.join('/'))
       window.location.href = arr.join('/');
       // router.push(arr.join('/'));
-      console.log("pushed")
+      // console.log("pushed")
     }
     setOpenItems({
       item: null,
