@@ -262,20 +262,25 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
   // };
 
   return (
-    <>
+    <Box
+      sx={{
+        boxShadow: '0px 4px 20px #0F134914',
+        // mb: '40px',
+        bgcolor: 'white',
+        overflow: 'hidden',
+        borderRadius: '20px',
+      }}
+    >
       <TableContainer>
         <Table
           aria-label="financial plan table"
           sx={{
-            bgcolor: 'white',
-            overflow: 'hidden',
             width: { xs: 'calc(100vw - 80px)', sm: '100vw' },
             maxWidth: { xs: '420px', sm: '420px' },
             minWidth: { xs: '200px', sm: '330px' },
             height: { xs: '540px', sm: '580px' },
-            borderRadius: '20px',
-            boxShadow: '0px 12px 10px #0F134914',
-            mb: '20px',
+            // boxShadow: '0px 12px 10px #0F134914',
+            // mb: '20px',
           }}
         >
           <TableBody
@@ -291,7 +296,7 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
               flexWrap: 'wrap',
             }}
           >
-            <TableContainer sx={{ overflowX: 'hidden !important', overflowY: 'auto' }}>
+            <TableContainer sx={{ overflowX: 'hidden', overflowY: 'auto' }}>
               <TableRow sx={{ display: 'flex' }}>
                 <TableContainer>
                   <TableRow sx={{ textAlign: 'start !important' }}>
@@ -382,7 +387,7 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Box>
   );
 };
 

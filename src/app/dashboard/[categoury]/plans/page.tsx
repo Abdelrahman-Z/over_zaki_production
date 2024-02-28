@@ -178,7 +178,7 @@ const page = () => {
             // pt: '15px',
             p: '15px',
             pb: 0,
-            height: '650px',
+            height: '660px',
             boxSizing: 'border-box',
             display: 'flex',
             // height: '633px',
@@ -203,6 +203,7 @@ const page = () => {
               position: 'relative',
               boxSizing: 'border-box',
               gap: { xs: 2, sm: 3 },
+              padding: '10px',
               display: 'flex',
               flexDirection: 'row',
               justifyContent: {
@@ -214,7 +215,8 @@ const page = () => {
                     : 'center !important',
               },
               alignItems: 'center',
-              width: { xs: '820px', sm: '850px' },
+              // width: { xs: '820px', sm: '850px' },
+              width: '100%',
               // mt: '30px'
             }}
           >
@@ -225,7 +227,7 @@ const page = () => {
                   (isMonthly ? item?.durationType == 'monthly' : item?.durationType != 'monthly')
               )
               ?.map((el: any) => (
-                <Box>
+                <Box sx={{ mb: '30px' }}>
                   <FinancialPlanCard
                     onAddFeature={onAddFeature}
                     plan={el}
