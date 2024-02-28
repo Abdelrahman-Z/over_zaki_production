@@ -10,6 +10,7 @@ import {
   FormControl,
   Input,
   MenuItem,
+  Paper,
   Select,
   Stack,
   Table,
@@ -263,10 +264,9 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
 
   return (
     <Box
+      component={Paper}
       sx={{
         boxShadow: '0px 4px 20px #0F134914',
-        // mb: '40px',
-        bgcolor: 'white',
         overflow: 'hidden',
         borderRadius: '20px',
       }}
@@ -287,7 +287,7 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
             sx={{
               '&::-webkit-scrollbar-thumb': { color: '#1BFCB6' },
               height: '600px',
-              bgcolor: '#fff',
+              // bgcolor: '#fff',
               overflow: 'auto',
               scrollbarWidth: 'thin',
               p: { xs: 1.5, sm: 2.5, md: 3.75 },
@@ -302,7 +302,6 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
                   <TableRow sx={{ textAlign: 'start !important' }}>
                     <TableCell
                       sx={{
-                        color: 'black',
                         borderBottomStyle: 'none',
                         padding: '1px',
                         fontSize: '20px',
@@ -315,7 +314,6 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
                   <TableRow sx={{ textAlign: 'start !important' }}>
                     <TableCell
                       sx={{
-                        color: 'black',
                         borderBottomStyle: 'none',
                         lineHeight: '25px',
                         padding: '0',

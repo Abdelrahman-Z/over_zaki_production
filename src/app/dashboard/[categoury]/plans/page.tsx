@@ -22,8 +22,11 @@ import FinancialPlanCard from 'src/sections/plans/FinancialCard';
 import DetailsNavBar from 'src/sections/products/DetailsNavBar';
 import * as Yup from 'yup';
 import AddIcon from '@mui/icons-material/Add';
+// import { useRouter } from 'next/router';
+import { useSearchParams, useRouter } from 'src/routes/hooks';
 
 const page = () => {
+  // const router = useRouter();
   const settings = useSettingsContext();
   const { categoury } = useParams();
   const [openAddFeature, setOpenAddFeature] = useState(false);
@@ -111,7 +114,9 @@ const page = () => {
   useEffect(() => {
     setFeatures(response?.data?.data?.feature);
   }, [response?.data?.data?.feature]);
-
+  // useEffect(() => {
+  //   document.body.style.overflow = 'auto';
+  // }, [router]);
   return (
     <>
       <Container
