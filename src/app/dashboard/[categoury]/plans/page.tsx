@@ -1,15 +1,12 @@
 'use client';
 import { yupResolver } from '@hookform/resolvers/yup';
+import AddIcon from '@mui/icons-material/Add';
 import { LoadingButton } from '@mui/lab';
 import { Box, Button, Container, Grid, Stack, Switch, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
-import { RoleBasedGuard } from 'src/auth/guard';
-import { BottomActions } from 'src/components/bottom-actions';
-import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs';
 import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import { useSettingsContext } from 'src/components/settings';
@@ -21,12 +18,8 @@ import {
 import FinancialPlanCard from 'src/sections/plans/FinancialCard';
 import DetailsNavBar from 'src/sections/products/DetailsNavBar';
 import * as Yup from 'yup';
-import AddIcon from '@mui/icons-material/Add';
-// import { useRouter } from 'next/router';
-import { useSearchParams, useRouter } from 'src/routes/hooks';
 
 const page = () => {
-  // const router = useRouter();
   const settings = useSettingsContext();
   const { categoury } = useParams();
   const [openAddFeature, setOpenAddFeature] = useState(false);
@@ -52,7 +45,7 @@ const page = () => {
     }),
     availableForAdvance: Yup.boolean(),
     availablePro: Yup.boolean(),
-    availableForBasic: Yup.boolean(),
+    // availableForBasic: Yup.boolean(),
   });
   const addFeatureMethods = useForm({
     resolver: yupResolver(AddFeatureSchema),
@@ -66,7 +59,7 @@ const page = () => {
       },
       availableForAdvance: false, // Default value for availableForPro
       availablePro: false, // Default value for availableForBasic
-      availableForBasic: false, // Default value for availableForBasic
+      // availableForBasic: false, // Default value for availableForBasic
     },
   });
   const {
@@ -86,7 +79,7 @@ const page = () => {
           tr: '', // Default value for Spanish content
           fr: '', // Default value for Spanish content
         },
-        availableForBasic: false, // Default value for availableForPro
+        // availableForBasic: false, // Default value for availableForPro
         availableForAdvance: false, // Default value for availableForBasic
         availablePro: false, // Default value for availableForBasic
       }); // Reset the form when the modal is closed
@@ -103,7 +96,6 @@ const page = () => {
   }, [addFeatureRes, resetAddFeatureForm]);
 
   const onAddFeature = handleAddFeatureSubmit(async (data) => {
-    console.log('data:', data);
     const link = categoury.toString();
     await addFeatureReq({
       category: link[0]?.toUpperCase() + link.slice(1),
@@ -114,9 +106,6 @@ const page = () => {
   useEffect(() => {
     setFeatures(response?.data?.data?.feature);
   }, [response?.data?.data?.feature]);
-  // useEffect(() => {
-  //   document.body.style.overflow = 'auto';
-  // }, [router]);
   return (
     <>
       <Container
@@ -161,18 +150,15 @@ const page = () => {
               '&:hover': {
                 background: '#19c6a0',
               },
-              // width: { xs: '20px', sm: 'auto' },
               p: { xs: '4px 8px', sm: '6px 10px', md: '8px 16px' },
               top: { xs: '120px', sm: '90px' },
               minWidth: '32px',
               right: { xs: '10px', sm: '20px' },
               position: 'absolute',
-              // top: '20px',
             }}
             onClick={() => setOpenAddFeature(true)}
           >
             <Typography sx={{ display: { xs: 'none', sm: 'flex' } }}>Add New Feature</Typography>
-            {/* <Typography sx={{ display: { xs: 'flex', sm: 'none' } }}>Add</Typography> */}
             <AddIcon />
           </Button>
         </Box>
@@ -180,27 +166,27 @@ const page = () => {
           container
           spacing={4}
           sx={{
-            // pt: '15px',
-            p: '15px',
-            pb: 0,
+            pt: 2,
             height: '660px',
             boxSizing: 'border-box',
             display: 'flex',
-            // height: '633px',
             justifyContent: {
               sm: 'start',
               md:
-                !!response?.data?.data?.plans &&
-                Object?.values(response?.data?.data?.plans)?.length > 2
+                response?.data?.data?.plans?.filter(
+                  (item: any) =>
+                    item?.type != 'basic' &&
+                    (isMonthly ? item?.durationType == 'monthly' : item?.durationType != 'monthly')
+                )?.length > 2
                   ? 'start !important'
                   : 'center !important',
             },
-            // justifyContent: { sm: 'start', md: 'center' },
             ml: 0,
             margin: '0 !important',
             overflowX: 'auto',
             width: '100%',
             overflowY: 'hidden',
+            scrollbarWidth: 'thin',
           }}
         >
           <Box
@@ -214,20 +200,23 @@ const page = () => {
               justifyContent: {
                 sm: 'start',
                 md:
-                  !!response?.data?.data?.plans &&
-                  Object?.values(response?.data?.data?.plans)?.length > 2
+                  response?.data?.data?.plans?.filter(
+                    (item: any) =>
+                      item?.type != 'basic' &&
+                      (isMonthly
+                        ? item?.durationType == 'monthly'
+                        : item?.durationType != 'monthly')
+                  )?.length > 2
                     ? 'start !important'
                     : 'center !important',
               },
               alignItems: 'center',
-              // width: { xs: '820px', sm: '850px' },
               width: '100%',
-              // mt: '30px'
             }}
           >
             {response?.data?.data?.plans
               ?.filter(
-                (item) =>
+                (item: any) =>
                   item?.type != 'basic' &&
                   (isMonthly ? item?.durationType == 'monthly' : item?.durationType != 'monthly')
               )
@@ -326,7 +315,7 @@ const page = () => {
               label="Available For Advance" // Assuming your RHFCheckbox supports a label prop
             />
             <RHFCheckbox name="availablePro" label="Available For Professional" />
-            <RHFCheckbox name="availableForBasic" label="Available For Basic" />
+            {/* <RHFCheckbox name="availableForBasic" label="Available For Basic" /> */}
           </Box>
         </FormProvider>
       </DetailsNavBar>

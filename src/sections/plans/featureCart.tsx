@@ -39,7 +39,7 @@ const FeatureCart = ({
   plan,
 }: any) => {
   const checkAvailability: any = {
-    basic: 'availableForBasic',
+    // basic: 'availableForBasic',
     pro: 'availablePro',
     advance: 'availableForAdvance',
   };
@@ -54,7 +54,7 @@ const FeatureCart = ({
       tr: Yup.string().required('Turkish content is required'),
       fr: Yup.string().required('French content is required'),
     }),
-    availableForBasic: Yup.boolean().required('This field is required'),
+    // availableForBasic: Yup.boolean().required('This field is required'),
     availablePro: Yup.boolean().required('This field is required'),
     availableForAdvance: Yup.boolean().required('This field is required'),
   });
@@ -69,7 +69,7 @@ const FeatureCart = ({
         tr: feature?.content?.tr,
         fr: feature?.content?.fr,
       },
-      availableForBasic: feature.availableForBasic,
+      // availableForBasic: feature.availableForBasic,
       availablePro: feature.availablePro,
       availableForAdvance: feature.availableForAdvance,
     },
@@ -92,7 +92,7 @@ const FeatureCart = ({
           tr: feature.content.tr ?? '',
           fr: feature.content.fr ?? '',
         },
-        availableForBasic: feature.availableForBasic ?? false,
+        // availableForBasic: feature.availableForBasic ?? false,
         availablePro: feature.availablePro ?? false,
         availableForAdvance: feature.availableForAdvance ?? false,
       });
@@ -400,10 +400,10 @@ const FeatureCart = ({
             >
               Avaliblity
             </Typography>
-            <RHFCheckbox
+            {/* <RHFCheckbox
               name="availableForBasic"
               label="Available For Basic" // Assuming your RHFCheckbox supports a label prop
-            />
+            /> */}
             <RHFCheckbox name="availablePro" label="available For Professional" />
             <RHFCheckbox name="availableForAdvance" label="available For Advance" />
           </Box>

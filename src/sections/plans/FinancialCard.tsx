@@ -239,28 +239,6 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
       },
     }).unwrap();
   });
-  // const [updateFeatureReq, updateFeatureRes] = useUpdateFeatureMutation();
-
-  // useEffect(() => {
-  //   // Handle API call responses
-  //   if (updateFeatureRes.isSuccess) {
-  //     enqueueSnackbar('Feature updated successfully', { variant: 'success' });
-  //   }
-  //   if (updateFeatureRes.isError) {
-  //     enqueueSnackbar('Failed to update the feature', { variant: 'error' });
-  //   }
-  // }, [updateFeatureRes]);
-
-  // const updateFeature = async (data: any) => {
-  //   console.log('data', data);
-  //   let { _id, category, __v, ...others } = data;
-  //   let { content, ...updatedData } = others;
-  //   let { localized, ...updatedContent } = content;
-  //   await updateFeatureReq({
-  //     id: _id, // Assuming each feature has a unique ID
-  //     data: { ...updatedData, content: updatedContent },
-  //   }).unwrap();
-  // };
 
   return (
     <Box
@@ -276,18 +254,15 @@ const FinancialPlanCard = ({ plan, features, onAddFeature, setFeatures }: any) =
           aria-label="financial plan table"
           sx={{
             width: { xs: 'calc(100vw - 80px)', sm: '100vw' },
-            maxWidth: { xs: '420px', sm: '420px' },
+            maxWidth: { xs: '410px', sm: '410px' },
             minWidth: { xs: '200px', sm: '330px' },
             height: { xs: '540px', sm: '580px' },
-            // boxShadow: '0px 12px 10px #0F134914',
-            // mb: '20px',
           }}
         >
           <TableBody
             sx={{
               '&::-webkit-scrollbar-thumb': { color: '#1BFCB6' },
               height: '600px',
-              // bgcolor: '#fff',
               overflow: 'auto',
               scrollbarWidth: 'thin',
               p: { xs: 1.5, sm: 2.5, md: 3.75 },

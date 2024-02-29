@@ -66,7 +66,7 @@ const ICONS = {
 
 export function useNavData() {
   const { t } = useLocales();
-  const {categoury} = useParams()
+  const { categoury } = useParams();
 
   // Initialize state with the initial value for navData
   let navData = [
@@ -123,15 +123,14 @@ export function useNavData() {
         {
           title: t('Plans'),
           path: `/dashboard/${categoury}/plans`,
-          icon: ICONS.blog
-        }
+          icon: ICONS.blog,
+        },
       ],
     },
-  ] // Add any other dependencies as needed
+  ]; // Add any other dependencies as needed
 
   return navData;
 }
-
 
 interface NavItem {
   title: string;
@@ -145,4 +144,3 @@ interface NavDataItem {
   subheader: string;
   items: NavItem[];
 }
-
