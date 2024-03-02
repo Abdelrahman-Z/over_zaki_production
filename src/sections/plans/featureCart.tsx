@@ -1,8 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-// import Box from '@mui/material/Box';
-// import Button from '@mui/material/Button';
-// import Typography from '@mui/material/Typography';
 import EditIcon from '@mui/icons-material/Edit';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -10,7 +7,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { enqueueSnackbar } from 'notistack';
 import { useUpdateFeatureMutation } from 'src/redux/store/services/api';
 import DetailsNavBar from '../products/DetailsNavBar';
-import { IconButton, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import FormProvider from 'src/components/hook-form/form-provider';
 import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
@@ -18,7 +14,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 import {
   Box,
-  FormControl,
   MenuItem,
   Select,
   Stack,
@@ -28,7 +23,6 @@ import {
 } from '@mui/material';
 const FeatureCart = ({
   feature,
-  type,
   handleFeatureChange,
   setShowIcons,
   index,
@@ -113,81 +107,6 @@ const FeatureCart = ({
     <>
       {/* Display the feature title */}
 
-      {/* <ListItem>
-        <ListItemIcon>
-          <Select
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'center',
-              //   width: '24px',
-              //   height: '22px',
-              '& .MuiInputBase-input': {
-                width: '24px',
-                height: '22px',
-                padding: '5px !important',
-              },
-              '& .MuiSelect-icon': {
-                display: 'none', // Hide the legend element which typically contains the arrow icon
-              },
-            }}
-            displayEmpty
-            inputProps={{ 'aria-label': 'Without label' }}
-            defaultValue={!!feature?.[checkAvailability?.[type]]}
-          >
-            <MenuItem value={true}>
-              <DoneIcon
-                // onClick={() => {
-                //   handleFeatureChange({
-                //     ...feature,
-                //     [checkAvailability?.[plan.type]]: true,
-                //   });
-                //   updateFeature({
-                //     ...feature,
-                //     [checkAvailability?.[plan.type]]: true,
-                //   });
-                //   setEdit(false);
-                // }}
-                sx={{
-                  fontSize: { xs: '25px', sm: '24px' },
-                  color: '#1BFCB6',
-                }}
-              />
-            </MenuItem>
-            <MenuItem
-              //   onClick={() => {
-              //     handleFeatureChange({
-              //       ...feature,
-              //       [checkAvailability?.[plan.type]]: false,
-              //     });
-              //     updateFeature({
-              //       ...feature,
-              //       [checkAvailability?.[plan.type]]: false,
-              //     });
-              //     setEdit(false);
-              //   }}
-              // style={{
-              //   fontSize: { xs: '23px !important', sm: '29px !important' },
-              //   color: '1BFCB6',
-              // }}
-              value={false}
-            >
-              <CloseIcon
-                color="error"
-                style={{
-                  fontSize: { xs: '23px !important', sm: '29px !important' },
-                }}
-              />
-            </MenuItem>
-          </Select>
-        </ListItemIcon>
-        <ListItemText primary={feature.content.en} />
-        <IconButton edge="end" aria-label="edit" onClick={() => setOpenChangeFeature(true)}>
-          <EditIcon />
-        </IconButton>
-      </ListItem> */}
-
       <TableRow
         onMouseOver={() => {
           setShowIcons(index + 1);
@@ -262,7 +181,6 @@ const FeatureCart = ({
               <CloseIcon
                 color="error"
                 style={{
-                  // color: 'red !important',
                   fontSize: { xs: '23px !important', sm: '29px !important' },
                 }}
               />
@@ -400,10 +318,6 @@ const FeatureCart = ({
             >
               Avaliblity
             </Typography>
-            {/* <RHFCheckbox
-              name="availableForBasic"
-              label="Available For Basic" // Assuming your RHFCheckbox supports a label prop
-            /> */}
             <RHFCheckbox name="availablePro" label="available For Professional" />
             <RHFCheckbox name="availableForAdvance" label="available For Advance" />
           </Box>

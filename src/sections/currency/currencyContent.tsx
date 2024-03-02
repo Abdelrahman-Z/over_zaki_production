@@ -5,9 +5,6 @@ import {
   AccordionSummary,
   Box,
   Button,
-  Container,
-  Grid,
-  Paper,
   Switch,
   TextField,
   Typography,
@@ -23,7 +20,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import * as Yup from 'yup';
-import { countries, languages } from 'countries-list';
+import { countries } from 'countries-list';
 import { useUpdateCurrencyMutation } from 'src/redux/store/services/api';
 import { enqueueSnackbar } from 'notistack';
 
@@ -49,7 +46,9 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
     },
   };
   const { iso3c, __v, _id, ProtoType, ...val } = item;
-  const value = Object.fromEntries(Object.entries(val).filter(([key]) => key !== '[[ProtoType]]'));
+  const value = Object.fromEntries(
+    Object.entries(val).filter(([key]) => key !== '[[ProtoType]]')
+  ) as any;
   const [isPositionLeft, setIsPositionLeft] = useState('lift');
   const [isSpacing, setIsSpacing] = useState(true);
   const theme = useTheme();

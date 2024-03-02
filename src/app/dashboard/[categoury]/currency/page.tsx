@@ -1,34 +1,18 @@
 'use client';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
   Container,
   Grid,
   Paper,
-  Switch,
-  TextField,
-  Typography,
 } from '@mui/material';
 import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs';
-// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as React from 'react';
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
-// import OutlinedInput from '@mui/material/OutlinedInput';
-// import InputLabel from '@mui/material/InputLabel';
-// import MenuItem from '@mui/material/MenuItem';
-// import FormControl from '@mui/material/FormControl';
-// import Select from '@mui/material/Select';
-// import Chip from '@mui/material/Chip';
 import { useGetAllCurrencyQuery } from 'src/redux/store/services/api';
 import CurrencyContent from 'src/sections/currency/currencyContent';
 
 const Currency = () => {
   let language = 'en';
-  // const ITEM_HEIGHT = 48;
-  // const ITEM_PADDING_TOP = 8;
   const allCurrencyRes = useGetAllCurrencyQuery('currency');
   const allCurrencyData = allCurrencyRes?.data?.data?.data;
   console.log('allCurrencyData: ', allCurrencyData);
