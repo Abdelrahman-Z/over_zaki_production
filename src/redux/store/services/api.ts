@@ -14,7 +14,7 @@ export const api = createApi({
             return headers;
         }
     }),
-    tagTypes: ['Theme', 'Style', 'Icon', 'StyleCat', 'IconCat', 'plan' , 'bussinssCat'],
+    tagTypes: ['Theme', 'Style', 'Icon', 'StyleCat', 'IconCat', 'plan' , 'bussinssCat', 'currency'],
     endpoints: (builder) => ({
         getThemeById: builder.query({
             query: (themeId) => `/app-theme/${themeId}`,
@@ -289,6 +289,21 @@ export const api = createApi({
             }),
             invalidatesTags: ['bussinssCat']
         }),
+        // currency
+        getAllCurrency: builder.query({
+            query: () => ({
+                url: `/currency/all`
+            }),
+            providesTags: ['currency']
+        }),
+        updateCurrency: builder.mutation({
+            query: ({id, data}) => ({
+                url: `/currency/${id}`,
+                method: 'PUT',
+                body: data
+            }),
+            invalidatesTags: ['currency']
+        })
     }),
 });
 
@@ -345,5 +360,8 @@ export const {
     // bussiness categoury
     useGetAllBussinessCategouryQuery,
     useAddNewBussinuseCategouryMutation,
-    useEditBussinuseCategouryMutation
+    useEditBussinuseCategouryMutation,
+    // currency
+    useGetAllCurrencyQuery,
+    useUpdateCurrencyMutation,
 } = api;
