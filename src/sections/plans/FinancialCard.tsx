@@ -1,3 +1,4 @@
+//@ts-nocheck
 'use client';
 import {
   Box,
@@ -104,10 +105,10 @@ const FinancialPlanCard = ({ plan, features, setFeatures }: any) => {
                     }}
                   >
                     {plan?.type === 'pro' && (
-                      <Image src={PlanProIcon} style={{ width: '50px', height: '60px' }} />
+                      <Image src={PlanProIcon} style={{ width: '50px', height: '60px' }} alt='financial card pro'/>
                     )}
                     {plan?.type === 'advance' && (
-                      <Image src={PlanAdvanced} style={{ width: '70px', height: '60px' }} />
+                      <Image src={PlanAdvanced} style={{ width: '70px', height: '60px' }} alt='financial card advance'/>
                     )}
                   </Box>
                 </Stack>

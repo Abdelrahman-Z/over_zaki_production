@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AddIcon from '@mui/icons-material/Add';

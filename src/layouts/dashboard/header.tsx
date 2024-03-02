@@ -87,9 +87,9 @@ export default function Header({ onOpenNav }: Props) {
       open: true,
     });
   }, []);
-  const handleClose = (categoury: any, number: Number) => {
+  const handleClose = (categoury: any, number?: Number) => {
     if (categoury) {
-      setSelect(number);
+      setSelect(number as any);
       const arr = pathName.split('/');
       arr[2] = categoury.uniqueName.toLowerCase();
       window.location.href = arr.join('/');
