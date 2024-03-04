@@ -34,6 +34,7 @@ const page = () => {
   const response = useGetPlansByCatQuery(
     allBussinessCategouryRes.data?.data?.data[select]?.uniqueName
   );
+  // console.log('Response: ', response);
   const [features, setFeatures] = useState(response?.data?.data?.feature);
   const [isMonthly, setIsMonthly] = useState(true);
   const AddFeatureSchema = Yup.object().shape({

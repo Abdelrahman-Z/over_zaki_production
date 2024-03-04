@@ -1,27 +1,18 @@
-// @ts-nocheck
 'use client';
-import React, { useEffect, useState } from 'react';
-import EditIcon from '@mui/icons-material/Edit';
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { enqueueSnackbar } from 'notistack';
-import { useUpdateFeatureMutation } from 'src/redux/store/services/api';
-import DetailsNavBar from '../products/DetailsNavBar';
-import { LoadingButton } from '@mui/lab';
-import FormProvider from 'src/components/hook-form/form-provider';
-import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
-import {
-  Box,
-  MenuItem,
-  Select,
-  Stack,
-  TableCell,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { LoadingButton } from '@mui/lab';
+import { Box, MenuItem, Select, Stack, TableCell, TableRow, Typography } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
+import FormProvider from 'src/components/hook-form/form-provider';
+import { useUpdateFeatureMutation } from 'src/redux/store/services/api';
+import * as Yup from 'yup';
+import DetailsNavBar from '../products/DetailsNavBar';
 const FeatureCart = ({
   feature,
   handleFeatureChange,
@@ -32,6 +23,7 @@ const FeatureCart = ({
   language,
   showIcons,
   plan,
+  isFeature,
 }: any) => {
   const checkAvailability: any = {
     // basic: 'availableForBasic',
@@ -104,13 +96,16 @@ const FeatureCart = ({
       enqueueSnackbar('Failed to update the feature', { variant: 'error' });
     }
   }, [updateFeatureRes]);
+  const valTrue: any = true;
+  const valFalse: any = false;
+  const fontsize: any = { xs: '23px !important', sm: '29px !important' };
   return (
     <>
       {/* Display the feature title */}
 
       <TableRow
         onMouseOver={() => {
-          setShowIcons(index + 1);
+          setShowIcons(index + 3);
         }}
         onMouseLeave={() => setShowIcons(false)}
         sx={{
@@ -120,7 +115,7 @@ const FeatureCart = ({
           m: '20px 0 !important',
         }}
       >
-        {edit?.no === index + 1 && edit?.status === 'icon' ? (
+        {edit?.no === index + 3 && edit?.status === 'icon' ? (
           <Select
             defaultValue={!!feature?.[checkAvailability?.[plan.type]]}
             sx={{
@@ -142,7 +137,7 @@ const FeatureCart = ({
             displayEmpty
             inputProps={{ 'aria-label': 'Without label' }}
           >
-            <MenuItem value={true}>
+            <MenuItem value={valTrue}>
               <DoneIcon
                 onClick={() => {
                   handleFeatureChange({
@@ -156,33 +151,27 @@ const FeatureCart = ({
                   setEdit(false);
                 }}
                 style={{
-                  fontSize: { xs: '23px !important', sm: '29px !important' },
+                  fontSize: fontsize,
                   color: '1BFCB6',
                 }}
               />
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleFeatureChange({
-                  ...feature,
-                  [checkAvailability?.[plan.type]]: false,
-                });
-                updateFeature({
-                  ...feature,
-                  [checkAvailability?.[plan.type]]: false,
-                });
-                setEdit(false);
-              }}
-              style={{
-                fontSize: { xs: '23px !important', sm: '29px !important' },
-                color: '1BFCB6',
-              }}
-              value={false}
-            >
+            <MenuItem value={valFalse}>
               <CloseIcon
                 color="error"
                 style={{
-                  fontSize: { xs: '23px !important', sm: '29px !important' },
+                  fontSize: fontsize,
+                }}
+                onClick={() => {
+                  handleFeatureChange({
+                    ...feature,
+                    [checkAvailability?.[plan.type]]: false,
+                  });
+                  updateFeature({
+                    ...feature,
+                    [checkAvailability?.[plan.type]]: false,
+                  });
+                  setEdit(false);
                 }}
               />
             </MenuItem>
@@ -190,10 +179,10 @@ const FeatureCart = ({
         ) : !!feature?.[checkAvailability?.[plan.type]] ? (
           <DoneIcon
             onMouseOver={() => {
-              setEdit({ no: index + 1, status: 'icon' });
+              setEdit({ no: index + 3, status: 'icon' });
             }}
             style={{
-              fontSize: { xs: '23px !important', sm: '29px !important' },
+              fontSize: fontsize,
               color: '#1BFCB6',
             }}
           />
@@ -201,10 +190,10 @@ const FeatureCart = ({
           <CloseIcon
             color="error"
             onMouseOver={() => {
-              setEdit({ no: index + 1, status: 'icon' });
+              setEdit({ no: index + 3, status: 'icon' });
             }}
             style={{
-              fontSize: { xs: '23px !important', sm: '29px !important' },
+              fontSize: fontsize,
             }}
           />
         )}
@@ -222,12 +211,12 @@ const FeatureCart = ({
           <Box component={'span'} sx={{ width: '100%', display: 'flex', gap: '30px' }}>
             <Typography
               onMouseOver={() => {
-                setEdit({ no: index + 1, status: 'input' });
+                setEdit({ no: index + 3, status: 'input' });
               }}
             >
               {feature?.content?.[language] || feature?.content}
             </Typography>
-            {showIcons === index + 1 ? (
+            {showIcons === index + 3 ? (
               <Box component={'span'} sx={{ display: 'flex', gap: '10px' }}>
                 <EditIcon
                   onClick={() => setOpenChangeFeature(true)}
@@ -311,16 +300,20 @@ const FeatureCart = ({
               TR
             </Typography>
             <RHFTextField fullWidth variant="filled" name="content.tr" />
-            <Typography
-              component="p"
-              noWrap
-              variant="subtitle2"
-              sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
-            >
-              Avaliblity
-            </Typography>
-            <RHFCheckbox name="availablePro" label="available For Professional" />
-            <RHFCheckbox name="availableForAdvance" label="available For Advance" />
+            {isFeature && (
+              <>
+                <Typography
+                  component="p"
+                  noWrap
+                  variant="subtitle2"
+                  sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+                >
+                  Avaliblity
+                </Typography>
+                <RHFCheckbox name="availablePro" label="available For Professional" />
+                <RHFCheckbox name="availableForAdvance" label="available For Advance" />
+              </>
+            )}
           </Box>
         </FormProvider>
       </DetailsNavBar>

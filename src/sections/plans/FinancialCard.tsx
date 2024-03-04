@@ -1,12 +1,11 @@
-//@ts-nocheck
 'use client';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Box,
   Paper,
   Stack,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableRow,
   Typography,
@@ -16,14 +15,15 @@ import { useState } from 'react';
 import PlanAdvanced from '../../assets/icons/advanced@2x.png';
 import PlanProIcon from '../../assets/icons/pro@2x.png';
 import FeatureCart from './featureCart';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import PlanName from './planName';
+import PlanPrice from './planPrice';
 
 const FinancialPlanCard = ({ plan, features, setFeatures }: any) => {
   let language = 'en';
   const [edit, setEdit] = useState({});
   const [showIcons, setShowIcons] = useState(false);
   const [isShowMore, setIsShowMore] = useState(false);
- 
+
   const handleFeatureChange = (value: any) => {
     setFeatures((prev: any) => {
       return prev.map((item: any) => (item._id === value._id ? value : item));
@@ -64,33 +64,8 @@ const FinancialPlanCard = ({ plan, features, setFeatures }: any) => {
             <TableContainer sx={{ overflowX: 'hidden', overflowY: 'auto' }}>
               <TableRow sx={{ display: 'flex' }}>
                 <TableContainer>
-                  <TableRow sx={{ textAlign: 'start !important' }}>
-                    <TableCell
-                      sx={{
-                        borderBottomStyle: 'none',
-                        padding: '1px',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {plan?.name?.en}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow sx={{ textAlign: 'start !important' }}>
-                    <TableCell
-                      sx={{
-                        borderBottomStyle: 'none',
-                        lineHeight: '25px',
-                        padding: '0',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                        textAlign: 'start',
-                      }}
-                      align="right"
-                    >
-                      {`${plan?.price[plan?.price?.iso3c]} ${plan?.price?.iso3c}`}
-                    </TableCell>
-                  </TableRow>
+                  <PlanName plan={plan} showIcons={showIcons} setShowIcons={setShowIcons} />
+                  <PlanPrice plan={plan} showIcons={showIcons} setShowIcons={setShowIcons} />
                 </TableContainer>
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
                   <Box
@@ -105,17 +80,25 @@ const FinancialPlanCard = ({ plan, features, setFeatures }: any) => {
                     }}
                   >
                     {plan?.type === 'pro' && (
-                      <Image src={PlanProIcon} style={{ width: '50px', height: '60px' }} alt='financial card pro'/>
+                      <Image
+                        src={PlanProIcon}
+                        style={{ width: '50px', height: '60px' }}
+                        alt="financial card pro"
+                      />
                     )}
                     {plan?.type === 'advance' && (
-                      <Image src={PlanAdvanced} style={{ width: '70px', height: '60px' }} alt='financial card advance'/>
+                      <Image
+                        src={PlanAdvanced}
+                        style={{ width: '70px', height: '60px' }}
+                        alt="financial card advance"
+                      />
                     )}
                   </Box>
                 </Stack>
               </TableRow>
               {features
-                ?.filter((_, index: number) => (!isShowMore ? index < 10 : true))
-                ?.map((item: any, index: number) => (
+                ?.filter((_: any, index: number) => (!isShowMore ? index < 10 : true))
+                ?.map((item: any, index: Number) => (
                   <FeatureCart
                     feature={item}
                     handleFeatureChange={handleFeatureChange}
@@ -126,6 +109,7 @@ const FinancialPlanCard = ({ plan, features, setFeatures }: any) => {
                     language={language}
                     showIcons={showIcons}
                     plan={plan}
+                    isFeature
                   />
                 ))}
               {features?.length >= 10 && (
@@ -138,7 +122,7 @@ const FinancialPlanCard = ({ plan, features, setFeatures }: any) => {
                       color: '#8688A3',
                       fontSize: '1.5rem',
                       cursor: 'pointer',
-                      transform: isShowMore && 'rotateX(180deg)',
+                      transform: isShowMore ? 'rotateX(180deg)' : '',
                     }}
                   />
                   <Typography sx={{ pl: '16px', color: '#8688A3', cursor: 'pointer' }}>

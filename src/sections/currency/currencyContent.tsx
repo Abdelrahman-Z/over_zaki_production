@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import {
   Accordion,
@@ -6,6 +5,9 @@ import {
   AccordionSummary,
   Box,
   Button,
+  Container,
+  Grid,
+  Paper,
   Switch,
   TextField,
   Typography,
@@ -21,7 +23,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import * as Yup from 'yup';
-import { countries } from 'countries-list';
+import { countries, languages } from 'countries-list';
 import { useUpdateCurrencyMutation } from 'src/redux/store/services/api';
 import { enqueueSnackbar } from 'notistack';
 
@@ -47,9 +49,7 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
     },
   };
   const { iso3c, __v, _id, ProtoType, ...val } = item;
-  const value = Object.fromEntries(
-    Object.entries(val).filter(([key]) => key !== '[[ProtoType]]')
-  ) as any;
+  const value = Object.fromEntries(Object.entries(val).filter(([key]) => key !== '[[ProtoType]]'));
   const [isPositionLeft, setIsPositionLeft] = useState('lift');
   const [isSpacing, setIsSpacing] = useState(true);
   const theme = useTheme();
@@ -211,37 +211,46 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
             width: '100%',
             alignItems: { xs: 'start', sm: 'center' },
             justifyContent: 'space-between',
-            gap: { xs: 0, sm: '30px' },
+            gap: { xs: 0, sm: '20px 20px' },
           }}
         >
-          <Box sx={{ width: '120px', display: 'flex', alignItems: 'center', m: '15px 0' }}>
-            <Typography>Space</Typography>
-            <Switch
-              inputProps={{ 'aria-label': 'Month' }}
-              checked={!isSpacing}
-              onChange={() => {
-                setIsSpacing((val) => !val);
-                changeFormValues();
-              }}
-              style={{ '& .MuiSwitch-track': { backgroundColor: '#1BFCB6' } }}
-            />
+          <Box
+            sx={{
+              width: { xs: '100%', sm: 'calc(50% - 10px)' },
+              display: 'flex',
+              alignItems: 'center',
+              m: '15px 0',
+            }}
+          >
+            <Box sx={{ width: '120px', display: 'flex', alignItems: 'center', m: '15px 0' }}>
+              <Typography>Space</Typography>
+              <Switch
+                inputProps={{ 'aria-label': 'Month' }}
+                checked={!isSpacing}
+                onChange={() => {
+                  setIsSpacing((val) => !val);
+                  changeFormValues();
+                }}
+                style={{ '& .MuiSwitch-track': { backgroundColor: '#1BFCB6' } }}
+              />
+            </Box>
+            <FormControl sx={{ width: `calc(100% - 120px)` }}>
+              <InputLabel id="demo-simple-select-label">Position</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={isPositionLeft}
+                label="Age"
+                onChange={(val) => {
+                  setIsPositionLeft(val?.target?.value);
+                  changeFormValues();
+                }}
+              >
+                <MenuItem value={'lift'}>left</MenuItem>
+                <MenuItem value={'right'}>right</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
-          <FormControl sx={{ width: `calc(50% - 150px)` }}>
-            <InputLabel id="demo-simple-select-label">Position</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={isPositionLeft}
-              label="Age"
-              onChange={(val) => {
-                setIsPositionLeft(val?.target?.value);
-                changeFormValues();
-              }}
-            >
-              <MenuItem value={'lift'}>left</MenuItem>
-              <MenuItem value={'right'}>right</MenuItem>
-            </Select>
-          </FormControl>
           <FormControl sx={{ width: { xs: '100%', sm: 'calc(50% - 10px)' } }}>
             <InputLabel id="demo-multiple-chip-label">Countries</InputLabel>
             <Select
@@ -279,6 +288,7 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
             '&:hover': {
               background: '#19c6a0',
             },
+            my: { xs: '15px', sm: 0 },
             p: { xs: '4px 8px', sm: '6px 10px', md: '8px 16px' },
             minWidth: '32px',
           }}

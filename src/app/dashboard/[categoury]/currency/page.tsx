@@ -1,10 +1,5 @@
 'use client';
-import {
-  Box,
-  Container,
-  Grid,
-  Paper,
-} from '@mui/material';
+import { Box, Container, Grid, Paper } from '@mui/material';
 import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs';
 import * as React from 'react';
 import { useState } from 'react';
@@ -15,8 +10,6 @@ const Currency = () => {
   let language = 'en';
   const allCurrencyRes = useGetAllCurrencyQuery('currency');
   const allCurrencyData = allCurrencyRes?.data?.data?.data;
-  console.log('allCurrencyData: ', allCurrencyData);
-  console.log('All Currency: ', allCurrencyRes);
   const [expanded, setExpanded] = useState(1);
 
   return (
