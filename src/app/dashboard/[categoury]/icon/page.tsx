@@ -102,7 +102,6 @@ const page = () => {
     seticonData(null);
   };
 
-
   const [updateIcon, { isSuccess }] = useUpdateIconMutation();
   const onSubmit = handleSubmit(async (data: any) => {
     console.log(data);
@@ -325,69 +324,69 @@ const page = () => {
   }, [editCategoryId]);
   return (
     <Container>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            mt: 2, // Margin top for spacing
-            gap: 5,
-            alignItems: 'end',
-          }}
-        >
-          <Grid xs={12} md="auto">
-            <CustomCrumbs heading="Icons" crums={false} />
-          </Grid>
-          <Grid sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <BottomActions>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                alignItems="center"
-                justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
-                spacing="20px"
-                sx={{ width: '100%', maxWidth: { xs: '100%', md: '250px' } }}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          mt: 2, // Margin top for spacing
+          gap: 5,
+          alignItems: 'end',
+        }}
+      >
+        <Grid xs={12} md="auto">
+          <CustomCrumbs heading="Icons" crums={false} />
+        </Grid>
+        <Grid sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <BottomActions>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              alignItems="center"
+              justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
+              spacing="20px"
+              sx={{ width: '100%', maxWidth: { xs: '100%', md: '250px' } }}
+            >
+              <Button
+                startIcon="+"
+                fullWidth
+                sx={{ borderRadius: '30px', color: '#0F1349' }}
+                component="button"
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setIconDrawer(true);
+                  seticonData(null);
+                }}
               >
-                <Button
-                  startIcon="+"
-                  fullWidth
-                  sx={{ borderRadius: '30px', color: '#0F1349' }}
-                  component="button"
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    setIconDrawer(true);
-                    seticonData(null);
-                  }}
-                >
-                  Add New Icon
-                </Button>
-              </Stack>
-            </BottomActions>
-            <BottomActions>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                alignItems="center"
-                justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
-                spacing="20px"
-                sx={{ width: '100%', maxWidth: { xs: '100%', md: '250px' } }}
+                Add New Icon
+              </Button>
+            </Stack>
+          </BottomActions>
+          <BottomActions>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              alignItems="center"
+              justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
+              spacing="20px"
+              sx={{ width: '100%', maxWidth: { xs: '100%', md: '250px' } }}
+            >
+              <Button
+                startIcon="+"
+                fullWidth
+                sx={{ borderRadius: '30px', color: '#0F1349' }}
+                component="button"
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setIconCategoryDrawer(true);
+                  setIconCategoryData({ name: '' });
+                }}
               >
-                <Button
-                  startIcon="+"
-                  fullWidth
-                  sx={{ borderRadius: '30px', color: '#0F1349' }}
-                  component="button"
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    setIconCategoryDrawer(true);
-                    setIconCategoryData({ name: '' });
-                  }}
-                >
-                  Add New Category
-                </Button>
-              </Stack>
-            </BottomActions>
-          </Grid>
-        </Box>
+                Add New Category
+              </Button>
+            </Stack>
+          </BottomActions>
+        </Grid>
+      </Box>
       <Grid container spacing={2} sx={{ padding: '16px' }} gap={2}>
         <LoadingButton
           variant="soft"
