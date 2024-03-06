@@ -1,15 +1,15 @@
-'use client';
-
+// @mui
+'use client'
+import React, { useEffect, useState } from 'react';
+import { useTheme } from '@mui/material/styles';
+import Stack from '@mui/material/Stack';
 import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Stack from '@mui/material/Stack';
-import Toolbar from '@mui/material/Toolbar';
-import { useTheme } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
 
-import { Box, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import { Box, Typography } from '@mui/material';
 // theme
 import { bgBlur } from 'src/theme/css';
 // hooks
@@ -17,38 +17,37 @@ import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
 // components
 import Logo from 'src/components/logo';
-import { useSettingsContext } from 'src/components/settings';
 import SvgColor from 'src/components/svg-color';
+import { useSettingsContext } from 'src/components/settings';
 import * as Yup from 'yup';
 
 //
-import { yupResolver } from '@hookform/resolvers/yup';
-import { LoadingButton } from '@mui/lab';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { enqueueSnackbar } from 'notistack';
-import { useForm } from 'react-hook-form';
+import { HEADER, NAV } from '../config-layout';
+import {
+  Searchbar,
+  AccountPopover,
+  SettingsButton,
+  LanguagePopover,
+  ContactsPopover,
+  NotificationsPopover,
+} from '../_common';
+import { AppDispatch, RootState } from 'src/redux/store/store';
 import { useDispatch } from 'react-redux';
+import { fetchBuilderList, setBuilder } from 'src/redux/store/thunks/builder';
+import { useSelector } from 'react-redux';
+import { useAddNewBussinuseCategouryMutation, useEditBussinuseCategouryMutation, useGetAllBussinessCategouryQuery } from 'src/redux/store/services/api';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import { LoadingButton } from '@mui/lab';
 import { RHFTextField } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
+import DetailsNavBar from 'src/sections/products/DetailsNavBar';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Iconify from 'src/components/iconify/iconify';
 import { UploadBox } from 'src/components/upload';
-import {
-  useAddNewBussinuseCategouryMutation,
-  useEditBussinuseCategouryMutation,
-  useGetAllBussinessCategouryQuery,
-  useGetPlansByCatQuery,
-} from 'src/redux/store/services/api';
-import DetailsNavBar from 'src/sections/products/DetailsNavBar';
-import {
-  AccountPopover,
-  ContactsPopover,
-  LanguagePopover,
-  NotificationsPopover,
-  Searchbar,
-  SettingsButton,
-} from '../_common';
-import { HEADER, NAV } from '../config-layout';
+import { enqueueSnackbar } from 'notistack';
 import CategouryItem from './categouryItem';
+import { PathnameContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
 
 // ----------------------------------------------------------------------
 
@@ -60,47 +59,43 @@ type DomainState = {
   open: HTMLElement | null;
 };
 
+
 export default function Header({ onOpenNav }: Props) {
-  const pathName = usePathname();
-  const router = useRouter();
-  const { categoury } = useParams();
-  const allBussinessCategouryRes = useGetAllBussinessCategouryQuery('');
-  const selectedCat = allBussinessCategouryRes?.data?.data?.data?.find(
-    (el: any) => el.uniqueName?.toLowerCase() === categoury?.toString()?.toLowerCase()
-  );
-  const [openAddCategoury, setOpenAddCategoury] = useState(false);
+
+  const pathName = usePathname()
+  const router = useRouter()
+  const { categoury } = useParams()
+  const allBussinessCategouryRes = useGetAllBussinessCategouryQuery('')
+  const selectedCat = allBussinessCategouryRes?.data?.data?.data?.find((el: any) => el.uniqueName.toLowerCase() === categoury.toString().toLowerCase())
+  const [openAddCategoury, setOpenAddCategoury] = useState(false)
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
-  const dispatch = useDispatch();
-  const [select, setSelect] = useState(0);
-  const response = useGetPlansByCatQuery(
-    allBussinessCategouryRes.data?.data?.data[select]?.name?.en
-  );
   const [openItems, setOpenItems] = React.useState<any>({
     open: false,
-    item: null,
+    item: null
   });
   const [categouryData, setCategouryData] = useState<any>(null);
+
+
   const handleOpen = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     setOpenItems({
       item: event.currentTarget,
-      open: true,
+      open: true
     });
   }, []);
-  const handleClose = (categoury: any, number?: Number) => {
+  const handleClose = (categoury: any) => {
     if (categoury) {
-      setSelect(number as any);
-      const arr = pathName.split('/');
-      arr[2] = categoury.uniqueName.toLowerCase();
-      window.location.href = arr.join('/');
+      const arr = pathName.split('/')
+      arr[2] = categoury.uniqueName.toLowerCase()
+      router.push(arr.join('/'))
     }
     setOpenItems({
       item: null,
-      open: false,
+      open: false
     });
   };
   // add new categoury
-  const [addCategouryReq, addCategouryRes] = useAddNewBussinuseCategouryMutation();
+  const [addCategouryReq, addCategouryRes] = useAddNewBussinuseCategouryMutation()
   const addCategourySchema = Yup.object().shape({
     en: Yup.string().required('English content is required'),
     ar: Yup.string().required('Arabic content is required'),
@@ -116,14 +111,14 @@ export default function Header({ onOpenNav }: Props) {
       es: '', // Default value for Spanish content
       tr: '', // Default value for Spanish content
       fr: '', // Default value for Spanish content
-    },
+    }
   });
   const {
     reset,
     handleSubmit,
     formState: { isSubmitting },
     control,
-  } = addCategouryMethods;
+  } = addCategouryMethods
 
   const handleAddImage = (files: any) => {
     setCategouryData({
@@ -139,15 +134,15 @@ export default function Header({ onOpenNav }: Props) {
   };
 
   const addNewCategoury = handleSubmit(async (data) => {
-    const formData = new FormData();
-    formData.append('name[en]', data.en);
-    formData.append('name[ar]', data.ar);
-    formData.append('name[tr]', data.tr);
-    formData.append('name[fr]', data.fr);
-    formData.append('name[es]', data.es);
-    formData.append('image', categouryData?.image);
-    await addCategouryReq(formData).unwrap();
-  });
+    const formData = new FormData()
+    formData.append('name[en]', data.en)
+    formData.append('name[ar]', data.ar)
+    formData.append('name[tr]', data.tr)
+    formData.append('name[fr]', data.fr)
+    formData.append('name[es]', data.es)
+    formData.append('image', categouryData?.image)
+    await addCategouryReq(formData).unwrap()
+  })
   useEffect(() => {
     if (!openAddCategoury) {
       reset({
@@ -157,22 +152,23 @@ export default function Header({ onOpenNav }: Props) {
         tr: '', // Default value for Spanish content
         fr: '', // Default value for Spanish content
       }); // Reset the form when the modal is closed
-      handleRemoveImage();
+      handleRemoveImage()
     }
   }, [openAddCategoury, reset]);
 
   useEffect(() => {
     if (addCategouryRes.isSuccess) {
-      enqueueSnackbar('categoury added successfully', { variant: 'success' });
+      enqueueSnackbar('categoury added successfully', { variant: "success" });
     }
     if (addCategouryRes.isError) {
-      enqueueSnackbar('Cannot add the categoury', { variant: 'error' });
+      enqueueSnackbar('Cannot add the categoury', { variant: "error" });
     }
   }, [addCategouryRes]);
   // #########
 
+
   // edit categoury
-  const [catIndex, setCatIndex] = useState(0);
+  const [catIndex, setCatIndex] = useState(0)
   const editCategourySchema = Yup.object().shape({
     name: Yup.object().shape({
       en: Yup.string().required('English content is required'),
@@ -181,13 +177,13 @@ export default function Header({ onOpenNav }: Props) {
       tr: Yup.string().required('Turkish content is required'),
       fr: Yup.string().required('France content is required'),
     }),
-    sort: Yup.number().required().positive(),
+    sort: Yup.number().required().positive()
   });
-  const [openEditCat, setOpenEditCat] = useState(false);
+  const [openEditCat, setOpenEditCat] = useState(false)
   const [editCategouryData, setEditCategouryData] = useState<any>(null);
   useEffect(() => {
-    setEditCategouryData(allBussinessCategouryRes.data?.data?.data[catIndex]);
-  }, [catIndex]);
+    setEditCategouryData(allBussinessCategouryRes.data?.data?.data[catIndex])
+  }, [catIndex])
 
   const [editCategouryReq, editCategouryRes] = useEditBussinuseCategouryMutation();
 
@@ -201,14 +197,10 @@ export default function Header({ onOpenNav }: Props) {
         tr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.tr,
         fr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.fr,
       },
-      sort: allBussinessCategouryRes.data?.data?.data[catIndex]?.sort,
-    },
+      sort: allBussinessCategouryRes.data?.data?.data[catIndex]?.sort
+    }
   });
-  const {
-    reset: resetUpdate,
-    handleSubmit: handleSubmitUpdate,
-    formState: { isSubmitting: isSubmittingUpdate },
-  } = editCatmethods;
+  const { reset: resetUpdate, handleSubmit: handleSubmitUpdate, formState: { isSubmitting: isSubmittingUpdate } } = editCatmethods;
 
   useEffect(() => {
     if (openEditCat) {
@@ -220,7 +212,7 @@ export default function Header({ onOpenNav }: Props) {
           tr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.tr,
           fr: allBussinessCategouryRes.data?.data?.data[catIndex]?.name.fr,
         },
-        sort: allBussinessCategouryRes.data?.data?.data[catIndex]?.sort,
+        sort: allBussinessCategouryRes.data?.data?.data[catIndex]?.sort
       });
     }
   }, [openEditCat, allBussinessCategouryRes.data?.data?.data[catIndex], reset]);
@@ -250,17 +242,14 @@ export default function Header({ onOpenNav }: Props) {
       formData.append('image', editCategouryData.image);
     }
 
-    await editCategouryReq({
-      id: allBussinessCategouryRes.data?.data?.data[catIndex]._id,
-      data: formData,
-    }).unwrap();
-  });
+    await editCategouryReq({ id: allBussinessCategouryRes.data?.data?.data[catIndex]._id, data: formData }).unwrap();
+  })
   useEffect(() => {
     if (editCategouryRes.isSuccess) {
-      enqueueSnackbar('categoury updated successfully', { variant: 'success' });
+      enqueueSnackbar('categoury updated successfully', { variant: "success" });
     }
     if (editCategouryRes.isError) {
-      enqueueSnackbar('Cannot update the categoury', { variant: 'error' });
+      enqueueSnackbar('Cannot update the categoury', { variant: "error" });
     }
   }, [editCategouryRes]);
   // #################
@@ -280,6 +269,9 @@ export default function Header({ onOpenNav }: Props) {
 
   // ----------------------------------------------------
 
+
+
+
   // ----------------------------------------------------
   const renderContent = (
     <>
@@ -291,96 +283,62 @@ export default function Header({ onOpenNav }: Props) {
         </IconButton>
       )}
 
+
       {smUp && (
-        <Box sx={{ transition: 'all .5s', minWidth: '160px', height: '80px' }} onClick={handleOpen}>
+        <Box sx={{ transition: 'all .5s', minWidth: '160px' }} onClick={handleOpen}  >
+
+
+
           {selectedCat && (
-            <Stack direction="row" alignItems="center" spacing="4px" sx={{ cursor: 'pointer' }}>
-              <Box
-                component="img"
-                src={selectedCat?.image}
-                sx={{
-                  width: '40px',
-                  filter: isDarkMode ? 'invert(100%)' : 'none',
-                }}
-              />
+            <Stack direction='row' alignItems='center' spacing="4px" sx={{ cursor: "pointer" }}>
+              <Box component='img' src={selectedCat?.image} sx={{
+                width: '40px',
+                filter: isDarkMode ? 'invert(100%)' : 'none',
+              }} />
               <Box>
                 <Typography
-                  component="p"
+                  component='p'
                   variant="subtitle2"
-                  sx={{
-                    opacity: 0.8,
-                    display: 'flex',
-                    alignItems: 'center',
-                    fontSize: '0.775rem',
-                    fontWeight: 900,
-                    gap: '3px',
-                  }}
-                >
-                  {' '}
-                  <span>{selectedCat?.name?.en}</span>
-                  <Box component="img" src="/raw/shopi2.svg" sx={{ color: '#FFFFFF' }} />{' '}
-                </Typography>
+                  sx={{ opacity: 0.8, display: 'flex', alignItems: 'center', fontSize: '0.775rem', fontWeight: 900, gap: '3px' }}
+                > <span>{selectedCat?.name?.en}</span>
+                  <Box component='img' src='/raw/shopi2.svg' sx={{ color: '#FFFFFF' }} /> </Typography>
                 <Typography
-                  component="p"
+                  component='p'
                   variant="subtitle2"
                   sx={{ opacity: 0.6, fontSize: '0.675rem' }}
-                >
-                  {' '}
-                  <span>{selectedCat?.name?.en}</span>{' '}
-                </Typography>
+                > <span>{selectedCat?.name?.en}</span>  </Typography>
               </Box>
             </Stack>
           )}
+
+
+
+
+
+
         </Box>
       )}
-      <Menu
-        id="domain-menu"
-        anchorEl={openItems?.item}
-        sx={{}}
-        onClose={() => handleClose(null)}
-        open={Boolean(openItems.open)}
-      >
+      <Menu id="domain-menu" anchorEl={openItems?.item} sx={{}} onClose={() => handleClose(null)} open={Boolean(openItems.open)}>
+
         {allBussinessCategouryRes.data?.data?.data?.map((categoury: any, index: any) => (
-          <CategouryItem
-            key={index}
-            number={index}
-            setCatIndex={setCatIndex}
-            setOpenEditCat={setOpenEditCat}
-            categoury={categoury}
-            handleClose={handleClose}
-          />
+          <CategouryItem key={index} number={index} setCatIndex={setCatIndex} setOpenEditCat={setOpenEditCat} categoury={categoury} handleClose={handleClose} />
         ))}
 
-        <MenuItem
-          onClick={() => {
-            handleClose(null);
-            setOpenAddCategoury(true);
-          }}
-        >
-          <Stack direction="row" alignItems="center" spacing="20px">
-            <Box
-              sx={{
-                fontSize: '34px',
-                color: '#8688A3',
-                width: '40px',
-                height: '40px',
-                borderRadius: '40px',
-                border: '2px dashed #8688A3',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+
+
+        <MenuItem onClick={() => {
+          handleClose(null)
+          setOpenAddCategoury(true)
+        }}>
+          <Stack direction='row' alignItems='center' spacing="20px" >
+            <Box sx={{ fontSize: '34px', color: '#8688A3', width: '40px', height: '40px', borderRadius: '40px', border: '2px dashed #8688A3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               +
             </Box>
             <Typography
-              component="p"
+              component='p'
               variant="subtitle2"
               sx={{ opacity: 0.6, fontSize: '0.675rem' }}
-            >
-              {' '}
-              Add new Project{' '}
-            </Typography>
+            > Add new Project </Typography>
           </Stack>
         </MenuItem>
       </Menu>
@@ -397,8 +355,8 @@ export default function Header({ onOpenNav }: Props) {
               size="large"
               loading={isSubmitting}
               onClick={() => {
-                addNewCategoury();
-                setOpenAddCategoury(false);
+                addNewCategoury()
+                setOpenAddCategoury(false)
               }}
               sx={{ borderRadius: '30px' }}
             >
@@ -491,7 +449,13 @@ export default function Header({ onOpenNav }: Props) {
             >
               EN
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="en" multiline rows={5} />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="en"
+              multiline
+              rows={5}
+            />
             <Typography
               component="p"
               noWrap
@@ -500,7 +464,13 @@ export default function Header({ onOpenNav }: Props) {
             >
               AR
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="ar" multiline rows={5} />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="ar"
+              multiline
+              rows={5}
+            />
             <Typography
               component="p"
               noWrap
@@ -509,7 +479,13 @@ export default function Header({ onOpenNav }: Props) {
             >
               ES
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="es" multiline rows={5} />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="es"
+              multiline
+              rows={5}
+            />
             <Typography
               component="p"
               noWrap
@@ -518,7 +494,13 @@ export default function Header({ onOpenNav }: Props) {
             >
               FR
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="fr" multiline rows={5} />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="fr"
+              multiline
+              rows={5}
+            />
             <Typography
               component="p"
               noWrap
@@ -527,7 +509,14 @@ export default function Header({ onOpenNav }: Props) {
             >
               TR
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="tr" multiline rows={5} />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="tr"
+              multiline
+              rows={5}
+            />
+
           </Box>
         </FormProvider>
       </DetailsNavBar>
@@ -537,7 +526,7 @@ export default function Header({ onOpenNav }: Props) {
       <DetailsNavBar
         open={openEditCat}
         onClose={() => {
-          setOpenEditCat(false);
+          setOpenEditCat(false)
         }}
         title={`Add New Categoury`}
         actions={
@@ -549,8 +538,9 @@ export default function Header({ onOpenNav }: Props) {
               size="large"
               loading={isSubmittingUpdate}
               onClick={() => {
-                editCategoury();
-                setOpenEditCat(false);
+
+                editCategoury()
+                setOpenEditCat(false)
               }}
               sx={{ borderRadius: '30px' }}
             >
@@ -643,7 +633,12 @@ export default function Header({ onOpenNav }: Props) {
             >
               EN
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="name.en" />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.en"
+
+            />
             <Typography
               component="p"
               noWrap
@@ -652,7 +647,12 @@ export default function Header({ onOpenNav }: Props) {
             >
               AR
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="name.ar" />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.ar"
+
+            />
             <Typography
               component="p"
               noWrap
@@ -661,7 +661,12 @@ export default function Header({ onOpenNav }: Props) {
             >
               ES
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="name.es" />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.es"
+
+            />
             <Typography
               component="p"
               noWrap
@@ -670,7 +675,11 @@ export default function Header({ onOpenNav }: Props) {
             >
               FR
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="name.fr" />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.fr"
+            />
             <Typography
               component="p"
               noWrap
@@ -679,7 +688,12 @@ export default function Header({ onOpenNav }: Props) {
             >
               TR
             </Typography>
-            <RHFTextField fullWidth variant="filled" name="name.tr" />
+            <RHFTextField
+              fullWidth
+              variant="filled"
+              name="name.tr"
+
+            />
             <Typography
               component="p"
               noWrap
@@ -688,10 +702,18 @@ export default function Header({ onOpenNav }: Props) {
             >
               Sort
             </Typography>
-            <RHFTextField fullWidth type="number" variant="filled" name="sort" />
+            <RHFTextField
+              fullWidth
+              type='number'
+              variant="filled"
+              name="sort"
+            />
+
           </Box>
         </FormProvider>
       </DetailsNavBar>
+
+
 
       <Searchbar />
 
