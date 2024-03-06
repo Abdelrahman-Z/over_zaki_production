@@ -130,6 +130,11 @@ export function useNavData() {
           path: `/dashboard/${categoury}/currency`,
           icon: ICONS.blog,
         },
+        {
+          title: t('Product'),
+          path: `/dashboard/${categoury}/product`,
+          icon: ICONS.blog,
+        },
       ],
     },
   ]; // Add any other dependencies as needed

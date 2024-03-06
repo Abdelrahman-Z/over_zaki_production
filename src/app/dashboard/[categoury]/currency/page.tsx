@@ -23,7 +23,7 @@ const Currency = () => {
           alignItems: 'center',
         }}
       >
-        <Grid xs={12} md="auto">
+        <Grid xs={12} md="auto" mb={2}>
           <CustomCrumbs heading="Currency" crums={false} />
         </Grid>
       </Box>

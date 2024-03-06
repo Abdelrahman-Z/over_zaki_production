@@ -1,31 +1,27 @@
 'use client';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
   Button,
-  Container,
-  Grid,
-  Paper,
   Switch,
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useEffect } from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
-import Chip from '@mui/material/Chip';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-import * as Yup from 'yup';
-import { countries, languages } from 'countries-list';
-import { useUpdateCurrencyMutation } from 'src/redux/store/services/api';
+import { countries } from 'countries-list';
 import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useUpdateCurrencyMutation } from 'src/redux/store/services/api';
+import * as Yup from 'yup';
 
 const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) => {
   const [currencyFeatureReq, currencyFeatureRes] = useUpdateCurrencyMutation();
@@ -53,11 +49,11 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
   const [isPositionLeft, setIsPositionLeft] = useState('lift');
   const [isSpacing, setIsSpacing] = useState(true);
   const theme = useTheme();
-  const [personName, setPersonName] = useState(value?.name);
-  const [personSymbol, setPersonSymbol] = useState(value?.name);
-  const [personCountry, setPersonCountry] = useState(value?.countries);
-  const { localized: localizedName, ...filteredVal } = personName;
-  const { localized: localizedSymbol, ...filteredSymbolVal } = personSymbol;
+  const [personName, setPersonName]: any = useState(value?.name);
+  const [personSymbol, setPersonSymbol]: any = useState(value?.name);
+  const [personCountry, setPersonCountry]: any = useState(value?.countries);
+  const { localized: localizedName, ...filteredVal }: any = personName;
+  const { localized: localizedSymbol, ...filteredSymbolVal }: any = personSymbol;
   const [formValues, setFormValues] = useState({
     countries: personCountry,
     name: filteredVal,
@@ -74,12 +70,12 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
       symbol: filteredSymbolVal,
     });
   };
-  const changePersonName = (val, key) => {
+  const changePersonName = (val: any, key: any) => {
     let tempData = { ...personName };
     tempData[key] = val;
     setPersonName(tempData);
   };
-  const changeSymbol = (val, key) => {
+  const changeSymbol = (val: any, key: any) => {
     let tempData = { ...personSymbol };
     tempData[key] = val;
     setPersonSymbol(tempData);
@@ -159,7 +155,7 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
           {!!value?.name &&
             Object?.entries(value?.name)
               ?.filter((item) => item[0] !== 'localized')
-              ?.map((it: string, index: number) => (
+              ?.map((it: any, index: number) => (
                 <TextField
                   label={it[0]}
                   value={Object?.values(personName)[index]}
@@ -180,7 +176,7 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
           {!!personSymbol &&
             Object?.entries(personSymbol)
               ?.filter((item) => item[0] !== 'localized')
-              ?.map((it: string, index: number) => (
+              ?.map((it: any, index: number) => (
                 <TextField
                   label={it[0]}
                   value={Object?.values(personSymbol)[index]}
@@ -231,7 +227,6 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
                   setIsSpacing((val) => !val);
                   changeFormValues();
                 }}
-                style={{ '& .MuiSwitch-track': { backgroundColor: '#1BFCB6' } }}
               />
             </Box>
             <FormControl sx={{ width: `calc(100% - 120px)` }}>
@@ -262,7 +257,7 @@ const CurrencyContent = ({ item, index, language, expanded, setExpanded }: any) 
               input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
               renderValue={(selected) => (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  {selected.map((value) => (
+                  {selected.map((value: any) => (
                     <Chip key={value} label={value} />
                   ))}
                 </Box>
